@@ -14,7 +14,7 @@ navbar:
     href: resources.html
   - text: "Home"
     icon: fa-folder
-    href: www.michaeldewittjr.com
+    href: https://michaeldewittjr.com
 output:
   html_document:
     theme: cosmo
@@ -27,3 +27,4 @@ output:
     biblio-style: apalike
     include:
       after_body: footer.html
+      in_header: GA.html
