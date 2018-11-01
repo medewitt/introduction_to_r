@@ -31,3 +31,19 @@ blockquote {
     margin-top: .25em;
     margin-left: 20px;
 }
+
+.column-left{
+  float: left;
+  width: 33%;
+  text-align: left;
+}
+.column-center{
+  display: inline-block;
+  width: 33%;
+  text-align: center;
+}
+.column-right{
+  float: right;
+  width: 33%;
+  text-align: right;
+}

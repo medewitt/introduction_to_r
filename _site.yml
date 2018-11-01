@@ -10,7 +10,7 @@ navbar:
     icon: fa-paper-plane
     href: exercises.html
   - text: "Resources"
-    icon: fa-paper-plane
+    icon: fa-hand-paper
     href: resources.html
   - text: "Home"
     icon: fa-folder

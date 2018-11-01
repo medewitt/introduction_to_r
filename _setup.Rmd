@@ -6,4 +6,5 @@ title: "Untitled"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 suppressPackageStartupMessages(library(tidyverse))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
