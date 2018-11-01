@@ -47,3 +47,7 @@ blockquote {
   width: 33%;
   text-align: right;
 }
+.bigbr {
+   display: block;
+   margin: 100px 0;
+}

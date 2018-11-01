@@ -15,7 +15,7 @@ biblio-style: apalike
 
 <div class="column-right">
 **Files**
-[<i class="fa fa-file"></i>](https://drive.google.com/open?id=1JrYnDZc_S2_1k71tSHx8pgREfn6W20Rd)
+[<i class="fa fa-file icon-4x"></i>](https://drive.google.com/open?id=1JrYnDZc_S2_1k71tSHx8pgREfn6W20Rd)
 [<i class="fa fa-github"></i>](https://drive.google.com/open?id=1JrYnDZc_S2_1k71tSHx8pgREfn6W20Rd)
 [<i class="fa fa-play-circle"></i>](https://vimeopro.com/user39539526/data-analysis-in-r)
 </div>
