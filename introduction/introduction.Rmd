@@ -1,0 +1,565 @@
+---
+title: "Data Analysis in R"
+subtitle: "Orientation to R Studio"
+author: "Michael E DeWitt Jr"
+date: "2018-09-06 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: ["mtheme_max.css", "fonts_mtheme_max.css"]  
+    self_contained: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightLanguage: R
+      countIncrementalSlides: false 
+---
+
+```{r startup, include = FALSE, message = FALSE, warning = FALSE}
+# This is good for getting the ggplot background consistent with
+# the html background color
+library(ggplot2)
+thm <- theme_bw() + 
+  theme(
+    panel.background = element_rect(fill = "transparent", colour = NA), 
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    legend.position = "top",
+    legend.background = element_rect(fill = "transparent", colour = NA),
+    legend.key = element_rect(fill = "transparent", colour = NA)
+  )
+theme_set(thm)
+```
+
+background-image: url(https://www.r-project.org/logo/Rlogo.svg)
+
+???
+
+Image credit: [R Foundation](https://www.r-project.org/logo/Rlogo.svg)
+
+---
+# Our mission
+
+* Introduce R as a programming language and `<<data science>>` environment
+
+* Introduce R Studio as an IDE
+
+* Get you working on your use cases quickly
+
+---
+# A little bit about R
+
+
+* R started with S... 1976-05-05 at Bell Labs
+
+
+.bottom[
+![Bell](Bell_Laboratories_logo.svg)
+
+]
+
+--
+
+* Developed out of the statistics department
+
+--
+
+* Non-standard methods were needed
+
+--
+
+* Solution: Develop programming language and environment designed explicitly for **interactive** data analysis using the best available computation methods and flexible enough to meet new use cases!
+
+---
+class: top
+# If you can do something well, then have someone pay you for it
+
+.right-column[
+S was then sold to the open market as S
+
+Later distributed as S-Plus
+
+Bought by TIBCO
+
+]
+
+.left-column[
+
+```{r echo=FALSE, out.width="600px"}
+knitr::include_graphics("libs/S-PLUS.gif")
+```
+]
+
+---
+# After S, R?
+
+* Ross Ihaka and Robert Gentleman met at University of Auckland while Dr. Gentleman on sabbatical
+
+.center[
+![auk](https://www.library.auckland.ac.nz/resources/images/UOA-NT-HC-RGB.png?r=2)
+]
+
+--
+
+* Common Problem: `$A$`, `$-plus`, `$TATA`, `$P$$`
+
+--
+
+* Solution: Develop an __open source__ implementation of S!
+
+--
+
+* Allow for new methods to be adopted and shared through **packages** <sup>*</sup>
+
+.footnote[[*] Packages are ways of collecting, documenting and sharing R (or other language) scripts that have been pre-written. They can be installed and then run as new functions extending base-R]
+
+---
+
+# CRAN Established
+
+* Comprehensive R Archive Network Established [cran](https://cran.r-project.org)  
+
+--
+
+* Hosting of the software itself and packages
+
+--
+
+* R-Core established to review and approve packages for inclusion on CRAN  
+
+---
+# Why chose R?
+
+* It's Free!!!  
+
+--
+
+* It's flexible  
+
+--
+
+* Access to the newest methods  
+
+--
+
+* The community support is strong  
+
+--
+
+* It has been extended into webpage generation, documentation, dashboards, etc  
+
+---
+
+# Why not R?
+
+--
+
+* Syntax is *not* consistent between packages  
+
+
+```{r eval=FALSE}
+# From randomForest
+rf_1 <- randomForest(x, y, mtry = 12, ntree = 2000, importance = TRUE)
+
+# From ranger
+rf_2 <- ranger(
+  y ~ ., 
+  data = dat, 
+  mtry = 12, 
+  num.trees = 2000, 
+  importance = 'impurity'
+)
+
+```
+
+--
+
+* Packages have not necessarily been vetted and completely de-bugged  
+
+--
+
+* R **can** be slower than some other languages  
+--
+
+* Performs calculations _in-memory_ (e.g. data < RAM)
+---
+
+# R Studio
+
+.center[![Rstudio](https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray-600x211.png)]
+
+* [R Studio](https://www.rstudio.com/), a for profit company, developed an IDE for R  
+
+--
+
+* IDE is an Integrated Development Environment  
+
+--
+* Syntax highlighting, auto-complete, visual exploration, integration with version control systems  and more!
+
+---
+class: center, top
+# So Let's Explore it
+
+Press CTRL + SHIFT + N or CMD + SHIFT + N to create a new script
+
+.top[![rstudio](libs/0_rstudio_ide.png)]
+
+---
+class: center, top
+# Start a new project
+
+
+
+We want to start a new project
+
+![new](libs/rstudio_new_project.png)
+
+Put the project in a new directory (typically the default)
+---
+class: center, top
+# Create a new project
+
+
+![new](libs/rstudio_new_project_2.png)
+
+We would like a new project (other items are for more advanced topics)
+
+---
+class: center, top
+# Name it
+
+
+Name the new project and place it in whatever directory works for you
+
+![new](libs/rstudio_name_project.png)
+
+---
+class: center, top
+# Ta Da!
+
+
+This should be your starting point for each new project
+
+![new](libs/rstudio_default_layout_1.png)
+
+---
+class: center, top
+# Now open a new scripting pane
+
+
+`CRTL+N` or `CMD+N` to open a new script
+
+![new](libs/rstudio_default_layout_2.png)
+
+---
+class: center, top
+# Scripting Pane
+
+
+
+![new](libs/rstudio_default_layout_2_script.png)
+
+---
+
+# Scripting Pane (Where the magic happens)
+
+Generally you want to write all of your code here in either:
+
+- Rmarkdown document (.Rmd)  
+
+- R script (.R)
+
+This way you can save your code and submit it to R!
+
+--
+
+(And save a copy to run again later)
+
+--
+
+You can send the script to R using the `CRTL + ENTER`/ `CMD + ENTER` Shortcut
+
+---
+
+
+class: center, top
+# Environment Pane
+
+This is where you will find objects that are `in-memory` or available to call
+
+![new](libs/rstudio_default_layout_2_environment.png)
+
+
+
+---
+class: center, top
+# File Directory Pane
+
+
+![new](libs/rstudio_default_layout_2_files.png)
+
+---
+class: center, top
+# Console Pane
+
+
+![new](libs/rstudio_default_layout_2_console.png)
+
+
+---
+
+# Console
+
+The console is the heart of R and the best calculator in the world
+
+```{r}
+4+6
+```
+
+If you type directly the output will be printed, but *not* saved
+
+--
+
+To save you need to use the assignment operator `<-` to store the object in memory
+
+```{r}
+my_output <- 4+6
+my_output
+```
+
+
+---
+
+class: center, top
+# Additional Tabs
+
+![new](libs/rstudio_additional_tabs.png)
+
+Additional tabs contain other objects include files, plots, packages, and viewer
+
+---
+class: center, top
+
+# Help!
+
+![new](libs/rstudio_help.png)
+
+A handy feature is the searchable help pane where you can get information on functions
+
+---
+
+# Additional Help
+
+You can also use the console to help you *find help*
+
+To call the help file for a particular function:
+
+```{r eval=FALSE}
+??lm
+```
+
+--
+
+For a function that you can't quite remember...
+
+```{r}
+apropos("glm")
+```
+
+
+---
+class: center, top
+# Package Viewer
+
+![new](libs/rstudio_packages_viewer.png)
+
+The package viewer allows you to see your install packages (with links to the function descriptions)
+
+---
+class: center, top
+# Package Install
+
+
+![new](libs/rstudio_package_install.png)
+
+You can install packages from `cran` using the package install feature
+
+--
+
+Later we will install packages from other sources like github
+
+---
+class: center, top
+# Plots
+
+![new](libs/rstudio_plots_pane.png)
+
+---
+class: center, top
+# Creating a new file
+
+![new](libs/rstudio_new_file.png)
+
+---
+class: center, top
+
+# New Rmarkdown
+
+Markdown documents are a way to weave text and code into the same documents
+
+![new](libs/rstudio_new_markdown_dialogue.png)
+
+---
+
+class: center, top
+# Rmarkdown Example File
+
+![new](libs/rstudio_rmarkdown_example.png)
+
+
+--- 
+
+---
+
+# Parts of an Rmarkdown Document - YAML Header
+
+The YAML header block is separated by three `_` symbols  
+
+```
+---
+title: "Untitled"
+author: "Michael DeWitt"
+date: "9/5/2018"
+output: html_document
+---
+
+```
+--
+
+Specifies to `pandoc` how to convert the document and into what format to render the document
+
+- html_output = html  
+
+- pdf_output = pdf  
+
+- word_output = Microsoft Word   
+    
+---
+
+# Parts of an Rmarkdown Document - Code Chunks
+
+
+Code chunks can be inserted with `CTRL + ALT + I` or `CMD + ALT + I`
+
+
+```{r eval=FALSE}
+fit <- lm(mpg ~ disp + wt, data = mtcars)
+```
+
+
+--
+
+Here you can type R code, and determine if the output will be printed in the document
+
+--
+
+You can run each code chunk by pressing the green arrow in the chunk 
+
+--
+
+Or running the code line by line
+
+---
+# Parts of an Rmarkdown Document - Plain Text
+
+The rest of the Rmarkdown is plain text
+
+--
+
+This is where you can write down ideas, your opinions, your findings
+
+--
+
+You can use this for both exploration (think lab notebook) and final documents
+
+--
+
+Rmarkdown also provides ways to add some additional formatting
+
+---
+
+# Rmarkdown Markup
+
+## Formatting
+
+.pull-left[
+
+`#` # Header 1
+
+`##` ## Header 2 
+
+
+`*italics*` or `_italics_` for *italics*
+
+
+`**bold**` or `__bold__` for **bold**
+
+]
+
+.pull-right[
+
+`-` or `*` for bullets
+
+* Bullet 1  
+* Bullet 2  
+    * Bullet 2a  
+
+
+`1` for numbered lists
+
+1 Item 1  
+2 Item 2  
+
+
+`$\int_{a}^bx^2dx$` for $\LaTeX$ e.g. $\int_{a}^bx^2dx$
+
+]
+
+---
+
+class: center, top
+# Knit it!
+
+![new](libs/rstudio_knit_button.png)
+
+---
+class: center, top
+# Rmarkdown to html!
+Check out the gallery at <https://rmarkdown.rstudio.com/gallery.html>
+
+![new](libs/rstudio_rmarkdown_html.png)
+
+---
+
+# Some final words about the course
+  
+--
+
+The emphasis is on _application_ and not on _theory_
+
+--
+
+I will teach using the `tidyverse` paradigm
+
+--
+
+We will learn data structures as we go along (not a programming class)
+
+--
+
+My way isn't always the best way (always alternatives)
+
+
+
+
+
+
