@@ -1,0 +1,390 @@
+---
+title: "Data Analysis in R"
+subtitle: "Dealing (Learning to Love) With Factors"
+author: "Michael E DeWitt Jr"
+date: "2018-10-18 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    df_print: tibble
+    css: ["mtheme_max.css", "fonts_mtheme_max.css"]  
+    self_contained: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightLanguage: R
+      countIncrementalSlides: false 
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(rows.print=5)
+library(knitr)
+library(tidyverse)
+```
+
+# Factors Are Frustrating To Novices
+.center[
+```{r out.width="800px", echo=FALSE}
+knitr::include_graphics("https://media.giphy.com/media/hyMFaxhuQkZTq/giphy.gif")
+```
+]
+
+- Factors throw weird errors
+
+- They get in the way of sorting (sometimes)
+
+
+---
+
+
+# But Why Factors?
+
+Categorical data types take on discrete values
+
+--
+
+Examples:
+
+- Months of the Year
+
+- Hair Color
+
+- Likert Scales
+
+- Political Party Affiliation
+
+- etc
+
+--
+
+_Factors_ help R represent _categorical_ variables
+
+---
+# Factor Representation in R
+
+Factors have a class of `factor`
+
+```{r}
+race <- factor(x = c("White", "Non-White"))
+class(race)
+```
+
+--
+
+Factors have "levels" which represent the values that the factor can take on
+
+```{r}
+levels(race)
+```
+
+---
+# Coercion
+
+You can can make any vector/ column a factor using `factor` or `as.factor`
+
+```{r}
+mtcars %>% 
+  mutate(cyl_fact = factor(cyl)) %>% 
+  select(cyl_fact, cyl)
+```
+
+---
+# As always, it is best to be explicit
+
+If you do not specify the levels R will alphabetise and set the order accordingly
+
+```{r}
+months <- factor(c("Jan", "Feb", "Mar"))
+```
+
+--
+
+```{r}
+months
+```
+
+---
+
+# Levels vs Labels, huh?
+
+`levels` are the numeric representation of a factor
+
+`labels` are the pretty name that it is given
+
+--
+
+### Practically
+
+**Labels** are nice for printing
+
+**Levels** are for ordering and doing math
+
+
+---
+
+# A Practical use case
+
+#### Likert Scale
+
+```{r}
+likert_agree <- c("Strongly Disagree", "Disagree", "Neither Agree/ Nor Disagree", "Agree", "Strongly Agree")
+```
+
+--
+
+#### We have some data
+
+```{r}
+response_group <- data_frame(response = c(1 ,2 ,3 ,4 ,4 ,4, 2, 3, 4))
+```
+
+--
+
+#### And we want to do some analysis
+
+```{r}
+mean(response_group$response)
+```
+
+---
+
+# A Practical Use Case
+
+.pull-left[
+```{r}
+response_group %>% 
+  mutate(response = factor(response, 
+                           likert_agree, 
+                           levels = 1:5)) %>% 
+  count(response)
+```
+]
+.pull-right[
+```{r echo=FALSE}
+response_group %>% 
+  mutate(response = factor(response, likert_agree, levels = 1:5)) -> response_group
+```
+
+
+```{r}
+ggplot(response_group, aes(response)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+```
+]
+
+---
+
+class: center, inverse, middle
+
+# So how do we fix the defaults?
+
+
+---
+
+# Enter the `forcats` package
+
+- Tidyverse package<sup>1</sup>
+
+- (almost ) All functions begin with the `fct_` prefix
+
+- Designed to help make working with factors easier<sup>2</sup>
+
+.footnote[
+[1] Package Page [here](https://forcats.tidyverse.org/)
+
+[2] More details in Hadley Wickham's _R for Data Science_ [here](https://r4ds.had.co.nz/factors.html)
+]
+
+
+---
+
+# A Practical Example
+
+An Extract from the [General Social Survey](http://gss.norc.org/) is provided in `forcats`
+
+```{r}
+gss_cat
+```
+
+---
+
+# Let's take a peak
+
+```{r}
+glimpse(gss_cat)
+```
+
+
+---
+
+# Let's Examine the Religion Section A Little Closer
+
+```{r}
+gss_cat %>% 
+  count(relig)
+```
+
+
+---
+
+# Enter `forcats` for aggregation
+
+.pull-left[
+`fct_lump` will help us by grouping infrequent groups of our specifcation together
+
+```{r}
+gss_cat %>% 
+  mutate(relig = fct_lump(relig, n = 4)) %>% 
+  count(relig)
+```
+]
+
+.pull-right[
+`fct_other` will replace non-specified with others
+
+```{r}
+gss_cat %>% 
+  mutate(relig = fct_other(relig, 
+                           keep = c("Christian", "Moslem/islam", "Jewish"))) %>% 
+  count(relig)
+```
+
+
+]
+---
+# Some additional functions
+
+`fct_collapse` can be used when you want to collapse a specific factor together
+
+.pull-left[
+```{r}
+gss_cat %>% 
+  count(partyid)
+```
+
+]
+
+.pull-right[
+```{r}
+gss_cat %>% 
+  mutate(party_id_rd = fct_collapse(partyid,
+    Rep = c("Strong republican", "Not str republican"),
+    Dem = c("Strong democrat", "Not str democrat"),
+    Ind = c("Ind,near rep", "Independent", "Ind,near dem"))) %>% 
+  count(party_id_rd)
+```
+]
+
+---
+# We can also recode the levels completely
+
+`fct_recode` will allows us to recode based on our own wishes
+
+
+
+.pull-left[
+#### Syntax
+```{r eval = FALSE}
+data %>% 
+  mutate( x = fct_recode(x,
+                         "New name1" = "Old Name1",
+                         "New name2" = "Old Name2")
+
+```
+
+]
+
+
+
+.pull-left[
+#### Example
+```{r eval = TRUE}
+gss_cat %>% 
+  mutate( rincome = fct_recode(rincome,
+                    "Too much to say" = "Refused",
+                    "None" = "Not applicable")) %>% 
+  select(rincome)
+
+```
+
+]
+
+---
+
+# Sometimes we want to change the ordering of factors
+
+`fct_relevel` Reset the factor orders
+
+`fct_inorder` Orders based on appearence in the data
+
+`fct_infreq` Orders from most common to leave common
+
+`fct_rev` Reverses the orders of the levels
+
+---
+# True Motivating Need
+
+Modeling and analysis!!!
+
+--
+
+### Analysis of Variance for Example...
+
+```{r}
+aov(tvhours ~ rincome, data = gss_cat) %>% 
+  summary()
+```
+
+---
+# One Note
+
+IF you create a factor and you specify a value that is not in the levels you will get an `NA` silently!
+
+```{r}
+my_vector <- c("Yes", "No", "Maybe")
+
+factor(my_vector, c("Yes", "No"))
+```
+
+--
+If you use `forcats` `parse_factor` you will be pased an NA
+
+```{r error=TRUE}
+parse_factor(my_vector, c("Yes", "No"))
+```
+
+
+---
+# _Aside_ History of Factors
+
+R developed as a statistical computing environment
+
+Statisticians do experiements (often in blocks)
+
+Factors make sense in this context
+
+Additionally, it saved memory because factors could be represented with `numbers` rather than `characters`
+
+
+---
+
+# Recap
+
+Factors are useful for
+
+- Summarising Categorical Data
+
+- Representing Categorical Data in Analysis
+
+- Organising Graphs
+
+- `forcats` provides a `tidyverse` approach to factors
+
+---
+
+class: inverse, middle, center
+
+# Now let's code
+
+

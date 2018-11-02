@@ -35,6 +35,14 @@ make_doc_links("gpp")
 make_doc_links("cleaning")
 ```
 
+## Introduction to Data Types
+### tldr:
+>A Gentle introduction to the different ways R represents (stores) data.
+
+```{r echo=FALSE, results='asis'}
+make_doc_links("intro_datatypes")
+```
+
 ## Dealing with Dates and Times
 ### tldr:
 >Learning how to convert, manipulate, and do calculations on R date time objects through the `lubridate` package.

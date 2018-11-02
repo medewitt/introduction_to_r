@@ -1,0 +1,284 @@
+---
+title: "Data Analysis in R"
+subtitle: "Dealing with Dates and Times"
+author: "Michael E DeWitt Jr"
+date: "2018-09-20 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    df_print: tibble
+    css: ["mtheme_max.css", "fonts_mtheme_max.css"]  
+    self_contained: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightLanguage: R
+      countIncrementalSlides: false 
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(rows.print=5)
+library(knitr)
+library(tidyverse)
+```
+
+
+background-image: url(https://www.dailydot.com/wp-content/uploads/2018/09/brett-kavanaugh-calendar-may-1982.jpg)
+
+background-size: 50%
+
+# Dates and Times are Important!
+
+
+???
+
+Image credit: [Daily Dot](https://www.dailydot.com/layer8/kavanaugh-calendar-1982/)
+
+---
+
+background-image: url(https://upload.wikimedia.org/wikipedia/en/d/dd/The_Persistence_of_Memory.jpg)
+
+background-size: 50%
+
+# But Dates and Times are Challenging
+
+???
+
+Image credit: Salvador Dali's Persistence of Memory
+
+---
+
+# Dates and Times are Special
+
+- Months have different days (even particular months change their days!)
+
+- Time has inconsistent units (hours, seconds)
+
+- Time zones!
+
+- They are ordered (so we can't treat them as characters)
+
+---
+
+# And...we all don't use the same conventions!
+
+--
+1. YYYY-MM-DD
+
+--
+
+1. MM-DD-YYYY
+
+--
+
+1. MM/DD/YYYY
+
+--
+
+1. YYYYMMDD
+
+--
+
+1. DDMMYYYY
+
+--
+
+1. MMMYY
+
+--
+
+1. Somethings else?????
+
+---
+
+## R Solution?
+
+- Add a new `type` to deal with dates and times
+
+--
+
+This new type will allow the R internals to handle date/ time conversions and calculations
+
+--
+
+You just need to know how to convert an object to a date to take advantage...
+
+---
+# R Doesn't Recognize Dates Immediately Sometimes
+
+```{r}
+class("2017-10-17")
+```
+
+```{r}
+class("10/17/2018")
+```
+
+---
+# Explicitly Defining Dates
+
+R has some built in function to help define dates
+
+Personally I find them difficult and [unintuitive](https://stat.ethz.ch/R-manual/R-devel/library/base/html/strptime.html) to use...
+
+```{r}
+z_base <- strptime("20/2/06 11:16:16", "%d/%m/%y %H:%M")
+z_base
+```
+
+---
+
+# Enter `lubridate`
+
+`lubridate` is another `tidyverse` package designed to detail with dates
+
+--
+
+It has functions that make dealing with dates more intuitive
+
+```{r}
+library(lubridate)
+
+z_lub <- dmy_hms("20/2/06 11:16:16", tz = "America/New_York")
+z_lub
+```
+
+See the [cheatsheet](https://rawgit.com/rstudio/cheatsheets/master/lubridate.pdf)
+
+---
+
+# `lubridate` provides several functions for dates
+
+The function you use depends on the format in which you find your data
+
+`ymd` for **Year** ("/"|"-") **Month** ("/"|"-") **Day**
+
+`dmy` for **Day** ("/"|"-") **Month** ("/"|"-") **Year**
+
+`mdy` for **Month** ("/"|"-") **Day** ("/"|"-") **Year**
+
+---
+
+# Additionally We Can Specify The Timezone
+
+```{r}
+mdy("10/16/2018", tz = "Pacific/Auckland")
+```
+
+---
+# Sometimes we are interested in a part of a date
+
+ `day` returns the day number
+ 
+ `week` returns the week number
+ 
+ `wday` returns the day of the week
+ 
+ `month` returns the month number
+ 
+ `year` returns the year
+---
+
+# Times
+
+Times are also tricky for many of the same reasons
+
+But `lubridate` has our solution
+
+_And_ `lubridate` functions are compatible with `tidyverse` workflows
+
+---
+
+# Datetimes vs times
+
+R via `lubridate` has two representations of times
+
+`Datetimes` which have a date _and_ time component
+
+`Times` which have a time component only
+
+The context will guide you as to how to manipulate the data
+
+---
+
+# Our Functions
+
+## Date Times
+For each `ymd` combination we have an associated function to parse:
+- hours only `ymd_h`
+- hours and minutes `ymd_hm`
+- hours, minutes, seconds `ymd_hms`
+- etc
+
+--
+
+## Times
+
+Same as above without the date function
+
+---
+
+# Calculating Differences
+
+To calculate differences between dates and time it is best to establish an "interval"
+
+```{r}
+interval(ymd("20161016"), dmy("1/1/2017"))
+```
+
+--
+We can then do calculations on it for example days in this interval using `d*` functions
+
+```{r}
+interval(ymd("20161016"), dmy("1/1/2017"))/ddays(1)
+```
+
+--
+
+Or even seconds
+
+```{r}
+interval(ymd("20161016"), dmy("1/1/2017"))/dseconds(1)
+```
+
+---
+
+# Datetimes Allow Times Series Analysis
+
+USing the [`forecast`](https://otexts.org/fpp2/) package we can implement advanced time series models (ARIMA, etc)
+
+Using [`CausalImpact`](https://google.github.io/CausalImpact/CausalImpact.html) we can estimate Causality using Bayesian Structural Times Series
+
+Using [`prophet`](https://facebook.github.io/prophet/docs/quick_start.html) we can forecast at scale using Bayesian estimation
+
+And, And...
+---
+
+# Recap
+
+Date and Times are tricky. Period.
+
+R has excellent faculties for dealing with dates and times
+
+`lubridate` can help us convert our dates and times to R dates and times
+
+---
+
+# We have some functions from `lubridate` to help us
+
+#### Convert
+
+`ymd` for **Year** ("/"|"-") **Month** ("/"|"-") **Day**
+
+`dmy` for **Day** ("/"|"-") **Month** ("/"|"-") **Year**
+
+`mdy` for **Month** ("/"|"-") **Day** ("/"|"-") **Year**
+
+#### Manipulate
+ `day` / `week` / `wday` / `month` /`year`/`hour`/`second` to parse the desired component
+ 
+ `interval` to create and interval between two dates
+ 
+ `d*` functions to calculate the difference (in units desired)
+ 
+ And others depending on your need! See [lubridate](https://lubridate.tidyverse.org/)
