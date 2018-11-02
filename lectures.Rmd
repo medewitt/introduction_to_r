@@ -56,5 +56,5 @@ make_doc_links("factors")
 >An overview of how to create publication quality graphics through the `ggplot2` package. A little discussion of the Grammar of Graphics upon whose philosophies `ggplot2` is built.
 
 ```{r echo=FALSE, results='asis'}
-make_doc_links("basic_graphing")
+make_doc_links("basic_graphing", video_link = FALSE)
 ```
