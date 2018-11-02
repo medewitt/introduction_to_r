@@ -9,41 +9,9 @@ suppressPackageStartupMessages(library(tidyverse))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 library(glue)
 library(yaml)
-
+source("utils.R")
+make_website_footer()
 repo_url <- yaml::read_yaml("_site.yml")[["base_url"]]
 
-make_doc_links <-function(document_name, video_link = TRUE){
-  if(video_link){
-    glue(
-    '<div class="column-right">
-**Files**
-[<i class="fa fa-file icon-4x"></i>]({repo_url}/blob/master/{document_name}/{document_name}.pdf)
-[<i class="fab fa-r-project"></i>]({repo_url}/blob/master/{document_name}/{document_name}.Rmd)
-[<i class="fa fa-play-circle"></i>](https://vimeopro.com/user39539526/data-analysis-in-r)
-</div>
-<br>')
-  } else{
-    glue(
-    '<div class="column-right">
-**Files**
-[<i class="fa fa-file icon-4x"></i>]({repo_url}/blob/master/{document_name}/{document_name}.pdf)
-[<i class="fab fa-r-project"></i>]({repo_url}/blob/master/{document_name}/{document_name}.Rmd)
-</div>
-<br>')
-  }
-  
-}
-
-library(htmltools)
-thumbnail <- function(title, img, href, caption = TRUE) {
-  div(class = "col-sm-4",
-      a(class = "thumbnail", title = title, href = href,
-        img(src = img),
-        div(class = ifelse(caption, "caption", ""),
-          ifelse(caption, title, "")
-        )
-      )
-  )
-}
-
+writeLines(c("test"), "test.html")
 ```

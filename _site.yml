@@ -29,3 +29,9 @@ output:
     include:
       after_body: footer.html
       in_header: GA.html
+instructor: "Michael DeWitt"
+address1: "Office of Institutional Research"
+address2: "309 Reynolda Hall"
+address3: "Winston- Salem, NC, 27106"
+github: "medewitt"
+email: "dewittme.wfu.edu"
