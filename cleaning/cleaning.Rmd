@@ -1,0 +1,615 @@
+---
+title: "Data Analysis in R"
+subtitle: "Data Cleaning"
+author: "Michael E DeWitt Jr"
+date: "2018-09-20 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    df_print: tibble
+    css: ["mtheme_max.css", "fonts_mtheme_max.css"]  
+    self_contained: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightLanguage: R
+      countIncrementalSlides: false 
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(rows.print=5)
+library(knitr)
+library(tidyverse)
+```
+
+
+
+background-image: url(https://images.officeworld.com/products/500/272885.JPG)
+
+# Cleaning is always a chore...
+
+???
+
+Image credit: [Office World](https://images.officeworld.com/products/500/272885.JPG)
+
+
+
+---
+
+background-image: url(https://secure.i.telegraph.co.uk/multimedia/archive/02064/Sir-James-Dyson_2064492b.jpg)
+
+# But wouldn't you rather be a Dyson?
+
+???
+
+Image credit: [Daily Telegraph](https://secure.i.telegraph.co.uk/multimedia/archive/02064/Sir-James-Dyson_2064492b.jpg)
+
+---
+
+background-image: url(https://amp.businessinsider.com/images/5b9144b8e199f336008b5aff-960-719.jpg)
+background-size: 70%
+
+# Or even better...
+
+---
+class: inverse, center, middle
+
+# Get Started
+
+---
+
+# Getting Data in...
+
+.pull-left[
+The first part of the process in uploading data into R.
+
+But the biggest question is what kind of data do you have?
+]
+
+.pull-right[
+
+```{r echo=FALSE}
+include_graphics("https://i.stack.imgur.com/SSDlE.jpg")
+```
+
+]
+
+---
+
+# Some Common Data Formats
+
+- Delimited Files (fixed width, comma, tab, ...)
+
+- Excel
+
+- SPSS
+
+- STATA
+
+- Semi- structured (JSON, XML)
+
+---
+
+# Enter `readr`, part of the `tidyverse`
+
+`readr` is a package in the `tidyverse`
+
+--
+
+Designed with interfaces to handle most files
+
+--
+
+Has some nice defaults that make it easier than some base packages
+
+
+---
+
+# Starting with CSVs
+
+## Syntax
+
+```{r eval=FALSE}
+
+data <- read_csv("path_to_csv.csv")
+
+```
+
+--
+
+## Options
+
+- Specify column names
+
+- Where data start 
+
+- Column types
+
+---
+
+# Other delimiters
+
+## Tab Delimited Files
+
+```{r eval=FALSE}
+
+data <- read_tsv("path_to_csv.txt")
+
+```
+
+## Any other delimiter
+
+```{r eval=FALSE}
+
+data <- read_delim("path_to_csv.txt", delim = ";")
+
+```
+
+---
+
+# Now to `haven`
+
+The `haven` package can be used to read more proprietary data formats into R
+
+## SAS
+```{r eval=FALSE}
+my_sas <- read_sas("myfile.sas7bdat")
+```
+
+## SPSS
+```{r eval=FALSE}
+my_sas <- read_spss("myfile.sav")
+```
+
+## STATA
+```{r eval=FALSE}
+my_sas <- read_dta("myfile.dta")
+```
+
+---
+
+# Excel using `readxl`
+
+And of course the most ubiquitous data form...
+
+```{r eval=FALSE}
+my_excel <-read_excel("my_excel_file.xlsx")
+```
+
+--
+
+- Specify cell ranges
+- Name columns
+- etc
+
+---
+
+# And other formats
+
+Json with `jsonlite`
+
+XML with `xml2` or `XML` _(my preference is `xml2`)_
+
+---
+class: inverse, center, middle
+
+# Now for cleaning
+
+---
+
+# Tidy data
+
+Most of the `tidyverse` relies on the ["tidy"](https://vita.had.co.nz/papers/tidy-data.pdf) paradigm of data
+
+--
+
+One observation per row, one attribute per column
+
+--
+
+Once data is in the format, visualisation and modeling becomes easier
+
+---
+
+# Wide to Narrow and Back Again
+
+We will use the `tidyr` package to help move from wide data to narrow data to move to the tidy format
+
+--
+
+## Key functions
+
+### `spread`
+
+Narrow to Wide
+
+###`gather`
+
+Wide to narrow
+
+---
+
+# `Spread`
+
+#### Syntax 
+```{r eval=FALSE}
+spread(data = data, 
+       key = "What You Want to Be Columns", 
+       value = "The value you want in the rows", 
+       fill = "What you want to appear if there are no values")
+```
+
+```{r echo=FALSE}
+iris_narrow <- iris %>% 
+  group_by(Species) %>% 
+  summarise(mu_petal = mean(Petal.Length),
+            mu_sepal = mean(Sepal.Width))
+```
+
+
+--
+
+#### Example
+
+```{r echo=FALSE}
+# From http://stackoverflow.com/questions/1181060
+stocks <- tibble(
+  time = as.Date('2010-01-01') + 0:9,
+  X = rnorm(10, 0, 1),
+  Y = rnorm(10, 0, 2),
+  Z = rnorm(10, 0, 4)
+)
+
+stocks <- gather(stocks, stock, price, -time)
+```
+
+.pull-left[
+```{r}
+stocks
+```
+
+]
+
+.pull-right[
+```{r}
+stocks %>% 
+  spread(stock, price)
+```
+
+]
+
+---
+
+# `Gather`
+
+#### Syntax 
+
+```{r eval=FALSE}
+gather(data = data, 
+       key = "new name of column", 
+       value = "what you want to call value",
+       -"what you don't want grouped")
+```
+
+
+```{r echo=FALSE}
+mini_iris <- iris[c(1, 51, 101), ]
+```
+
+--
+
+#### Example
+.pull-left[
+```{r}
+mini_iris
+```
+
+]
+
+.pull-right[
+```{r}
+mini_iris %>% 
+  gather(attribute, measurement, -Species)
+```
+
+]
+
+---
+class: inverse, center, middle
+
+# Now Let's Practice `spread` and `gather`
+
+---
+
+# Subset with `select`
+
+Suppose you want to retain only a few columns.  
+
+This can be done with the `select` command from `dplyr`
+
+```{r rows.print = 5}
+iris %>% 
+  select(Sepal.Length, Petal.Width)
+```
+
+
+---
+
+# Helpers for `select`
+
+**`starts_with("something")`** selects those columns that start with a specified string
+
+**`contains("something")`** selects those columns that have a string *anywhere* in the column name
+
+**`ends_with("something")`**  selects those columns that end with a specified string
+
+**`everything()`** selects everything else that was not explicitly selected
+
+--
+
+```{r echo=FALSE}
+iris <- as_tibble(iris)
+```
+
+
+```{r rows.print = 5}
+iris %>% 
+  select(starts_with("Sepal"))
+```
+
+---
+
+# `unite` and `separate`
+
+**`unite`** is a function that allows you to join (paste together) two columns
+
+```{r echo=FALSE}
+
+sample_df  <- tribble(
+  ~col1, ~col2, ~ col3,
+  "A", 1, "X",
+  "B", 2, "Y",
+  "C",3, "Z",
+)
+
+```
+
+#### Syntax
+
+```{r eval=FALSE}
+unite(data = data, col = "new_column_name", sep = "separator", 
+      remove = "T/F if you want to drop the columns", -column_you_dont_want_joined)
+```
+
+--
+#### Example
+.pull-left[
+
+```{r}
+sample_df
+```
+
+]
+
+.pull-right[
+```{r}
+sample_df %>% 
+  unite(col = "united", sep = "_", 
+        remove = FALSE, -col3)
+```
+]
+
+---
+
+# `unite` and `separate`
+
+**`separate`** is a function that allows you to split a column into multiple columns
+
+```{r echo=FALSE}
+
+sample_df  <- tribble(
+  ~united, ~ col3,
+  "A_1", "X",
+  "B_2", "Y",
+  "C_3", "Z",
+)
+
+```
+
+#### Syntax
+
+```{r eval=FALSE}
+separate(data = data, col = "what to separate", into = "new columns", 
+         sep = " what to separate by", remove = "T/F")
+```
+
+--
+#### Example
+.pull-left[
+
+```{r}
+sample_df
+```
+
+]
+
+.pull-right[
+```{r}
+sample_df %>% 
+  separate(col = united, into = c("col1", "col2"), 
+           sep = "_", remove = TRUE)
+```
+]
+
+---
+
+class: inverse, center, middle
+
+# Now Let's Practice `select`, `gather` and `unite`
+
+
+---
+
+# Using `filter`
+
+`filter` can be used to filter values to those ones that you would like
+
+#### Syntax
+
+```{r eval=FALSE}
+filter(data = data, condition to test)
+```
+
+--
+#### Example
+.pull-left[
+
+```{r rows.print=5}
+table(iris[["Species"]])
+```
+
+]
+
+.pull-right[
+```{r rows.print = 5}
+iris %>% 
+  filter(Species == "setosa") %>% 
+  select(Species, contains("Sepal"))
+```
+]
+
+---
+
+# Logical Operators
+
+- **==** for testing equivalence
+
+- **!=** not equal to
+
+- **>** / **<** greater than or less than
+
+- **>=** / **<=** greater than or less than or equal to
+
+- **&**/ **|** and and or allows for combining conditions (e.g. Species == "Setosa" & Sepal.Length >5)
+
+---
+
+# `rename` for changing column names
+
+**`rename`** can be used 
+
+#### Syntax
+
+```{r eval=FALSE}
+rename(data = data, new_name = old_name)
+```
+
+--
+#### Example
+.pull-left[
+
+```{r rows.print=5}
+iris
+```
+
+]
+
+.pull-right[
+```{r rows.print = 5}
+iris %>% 
+  rename(sepal_length = Sepal.Length) %>% 
+  select(sepal_length, ends_with("Width"))
+```
+]
+
+---
+
+#`mutate` to add new columns
+
+**mutate** can be used to create a _derrived_ or _calculated_ column
+
+#### Syntax
+
+```{r eval=FALSE}
+mutate(data = data, new_column = operation you want to do)
+```
+
+--
+#### Example
+.pull-left[
+
+```{r rows.print=5}
+mtcars
+```
+
+]
+
+.pull-right[
+```{r rows.print = 5}
+mtcars %>% 
+  mutate(mpg_per_wt = mpg / wt) %>% 
+  select(mpg, wt, mpg_per_wt)
+```
+]
+
+---
+
+# Group Operations
+
+`group_by` allows for group-wise observations
+
+You can then feed these groups to the `sumarise/summarize` function to do group-wise calculations
+
+--
+
+```{r}
+iris %>% 
+  group_by(Species) %>% 
+  summarise(mu_length = mean(Sepal.Length),
+           med_width = median(Sepal.Width))
+```
+
+---
+
+# Add more groups with `group_by`
+
+```{r}
+mtcars %>% 
+  group_by(cyl, am) %>% 
+  summarise(avg_mpg = mean(mpg),
+            n = n(),
+            min_wt = min(wt),
+            max_wt = max(wt)) %>% 
+  mutate(perc_of_group = n/sum(n)) %>% 
+  ungroup() %>% # Needed to remove grouping
+  mutate(perc_total = n/sum(n))
+```
+
+
+---
+
+# To Recap
+
+**`gather`** and **`spread`** to transform our data between wide and long forms
+
+**`select`** to subset columns
+
+**`filter`** to filter data to a specific condition
+
+**`unite`** and **`separate`** to combine and separate columns
+
+**`rename`** to rename our columns
+
+**`mutate`** to add new derrived or calculated columns
+
+**`group_by`** for group-wise operations
+
+**`summarise`** for summary functions on grouped variables
+
+---
+
+class: inverse, center, middle
+
+# Thanks!
+
+
