@@ -15,6 +15,7 @@ navbar:
   - text: "Home"
     icon: fa-folder
     href: https://michaeldewittjr.com
+base_url: https://github.com/medewitt/introduction_to_r/
 output:
   html_document:
     theme: cosmo

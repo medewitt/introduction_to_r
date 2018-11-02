@@ -13,31 +13,48 @@ biblio-style: apalike
 >An overview of R, RStudio and github. The focus is on orienting users to R via R Studio and getting comfortable within the IDE.
 
 
-<div class="column-right">
-**Files**
-[<i class="fa fa-file icon-4x"></i>](https://drive.google.com/open?id=1JrYnDZc_S2_1k71tSHx8pgREfn6W20Rd)
-[<i class="fa fa-github"></i>](https://drive.google.com/open?id=1JrYnDZc_S2_1k71tSHx8pgREfn6W20Rd)
-[<i class="fa fa-play-circle"></i>](https://vimeopro.com/user39539526/data-analysis-in-r)
-</div>
-<br>
+```{r echo=FALSE, results='asis'}
+make_doc_links("introduction")
+```
 
 ## Good Programming Practices
 
 ### tldr:
 >Reviewing good programming and data project practices to improve code and reproducibility.
 
+```{r echo=FALSE, results='asis'}
+make_doc_links("gpp")
+```
+
+
 ## Cleaning Data
 ### tldr:
 >Learn basic data manipulation through the use of the `dplyr` and `tidyr` packages. This includes transforming data between wide and long formats, combining columns and making new calculated columns.
+
+```{r echo=FALSE, results='asis'}
+make_doc_links("cleaning")
+```
 
 ## Dealing with Dates and Times
 ### tldr:
 >Learning how to convert, manipulate, and do calculations on R date time objects through the `lubridate` package.
 
+```{r echo=FALSE, results='asis'}
+make_doc_links("datetime")
+```
+
 ## Factors
 ### tldr:
 >An overivew of how to manipulate categorical data represented in R as "factors" via the `lubridate` package. This includes a brief introduction to modeling in R.
 
+```{r echo=FALSE, results='asis'}
+make_doc_links("factors")
+```
+
 ## Plotting with ggplot2
 ### tldr:
 >An overview of how to create publication quality graphics through the `ggplot2` package. A little discussion of the Grammar of Graphics upon whose philosophies `ggplot2` is built.
+
+```{r echo=FALSE, results='asis'}
+make_doc_links("basic_graphing")
+```

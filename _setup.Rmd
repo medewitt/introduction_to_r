@@ -7,4 +7,20 @@ title: "Untitled"
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 suppressPackageStartupMessages(library(tidyverse))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+library(glue)
+library(yaml)
+
+repo_url <- yaml::read_yaml("_site.yml")[["base_url"]]
+
+make_doc_links <-function(document_name){
+  glue(
+    '<div class="column-right">
+**Files**
+[<i class="fa fa-file icon-4x"></i>]({repo_url}/blob/master/{document_name}/{document_name})
+[<i class="fa fa-github"></i>]({repo_url}/blob/master/{document_name}/{document_name}.Rmd)
+[<i class="fa fa-play-circle"></i>](https://vimeopro.com/user39539526/data-analysis-in-r)
+</div>
+<br>')
+}
+
 ```
