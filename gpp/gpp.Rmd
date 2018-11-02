@@ -1,0 +1,986 @@
+---
+title: "Data Analysis in R"
+subtitle: "Good Programming Practices"
+author: "Michael E DeWitt Jr"
+date: "2018-09-20 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: ["mtheme_max.css", "fonts_mtheme_max.css"]  
+    self_contained: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightLanguage: R
+      countIncrementalSlides: false 
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+library(kableExtra)
+library(knitr)
+```
+
+# Not Every Lecture Can Be Fun
+
+.center[
+
+```{r out.width="400px", echo=FALSE}
+knitr::include_graphics("https://img4.demotywatoryfb.pl//uploads/201506/1434300294_by_makarej_inner.gif")
+```
+
+]
+
+--
+
+But it is essential to learn good habits in the beginning
+
+--
+
+Because bad habits are hard to break
+
+---
+
+# Good Programming Practices
+
+One day you will hand off your project
+
+--
+
+You take a new position
+
+--
+
+Get promoted
+
+--
+
+The future you who hasn't looked at the project in months (years?)
+
+--
+
+Good project organisation looks good to an employer
+
+--
+
+**You don't want to be on call forever!**
+
+.center[
+![frodo](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRz0e0B8GM93x5HAQHnOrjS9ap1jMS701cK3_h1n6cxCkQnNQcWkw)
+]
+
+---
+
+# Applying good practices will save you time
+
+--
+
+* You don't have to re-invent the wheel each time to reopen your work
+
+--
+
+* Providing project structure removes some of the "writer's block"
+
+--
+
+>Jobs decided he liked the idea of having a uniform for himself, “both because of its daily convenience (the rationale he claimed) and its ability to convey a signature style,” the excerpt reads. --PC Magazine
+
+.center[
+![steve](https://assets.pcmag.com/media/images/320051-steve-jobs.jpg?thumb=y&width=275&height=275)
+]
+
+???
+
+Image credit [here](https://www.pcmag.com/article2/0,2817,2394529,00.asp)
+
+---
+
+# The Other Nice Thing
+
+When somone calls you to ask for help
+
+--
+
+You can answer everything on the phone because you (and your team) use the same structure!
+
+.center[
+![beach](https://static1.squarespace.com/static/57911c9415d5db168a16c9b6/57911d25c534a56238285133/5a85efaae2c4837ed41a5f6c/1521917470834/IMG_9691.JPG?format=1000w)
+]
+
+???
+
+---
+
+
+# The RStudio Project Structure
+
+We are going to utilise the RStudio Project Structure
+
+--
+
+.pull-left[
+This will provide an *anchor* for our project structure
+]
+
+.pull-right[
+```{r echo=FALSE, out.width="100px"}
+include_graphics("libs/anchor.png")
+```
+
+]
+--
+
+.pull-left[
+
+Start a new *directory*
+
+]
+--
+
+
+.pull-left[
+The project will be completely self contained in this directory
+]
+--
+.pull-left[
+
+Allows anyone to take our project folder and run our *exact* same analysis
+]
+---
+
+# .Rproj
+
+.RProj is the heart of the R Studio Project
+
+--
+
+Basically a small text configuration file that specifies
+
+* Project working directory (aka where in the filesystem the project exists) 
+
+* Allows relative file paths to be used reliably
+
+* General configurations
+
+--
+
+We must turn off saving RData file!!!
+
+---
+
+# Building the scaffolding
+
+Start each project with a basic directory structure within your project
+
+```{r echo=FALSE}
+library(data.tree)
+acme <- Node$new("data analysis project")
+  data <- acme$AddChild("data")
+  figs <- acme$AddChild("figs")
+  munge <- acme$AddChild("munge")
+  src <- acme$AddChild("src")
+  output <- acme$AddChild("output")
+  reports <- acme$AddChild("reports")
+  
+  print(acme)
+
+```
+
+--
+
+These represent the _juste necessaire_ for each project
+
+---
+
+# Enhanced Directory Structure (recommended)
+
+The enhanced structure adds a few more folders which can be helpful for more advanced projects
+
+```{r echo=FALSE}
+library(data.tree)
+acme <- Node$new("data analysis project")
+  data <- acme$AddChild("data")
+  munge <- acme$AddChild("munge")
+  output <- acme$AddChild("output")
+  src <- acme$AddChild("src")
+  figs <- acme$AddChild("figs")
+  reports <- acme$AddChild("reports")
+  req <- acme$AddChild("req***")
+  tests <- acme$AddChild("test***")
+  
+  print(acme)
+
+```
+
+--
+
+Adding `req` and `test` will become clear as we explore this expanded structure
+
+---
+
+# Starting with a README
+
+```{r echo=FALSE}
+acme <- Node$new("data analysis project")
+  data <- acme$AddChild("data")
+  munge <- acme$AddChild("munge")
+  output <- acme$AddChild("output")
+  src <- acme$AddChild("src")
+  figs <- acme$AddChild("figs")
+  reports <- acme$AddChild("reports")
+  req <- acme$AddChild("req")
+  tests <- acme$AddChild("test")
+readme_base <- acme$AddChild("README.md/ README.Rmd")
+print(acme)
+```
+
+Your project directory should start with a README file that indicates a few basic components of your project
+
+--
+
+* **Project Title**
+
+* **Project Team and Contact Information**
+
+* **Purpose**: What is the goal of the project/ research question
+
+---
+# The README
+
+Serves as a top level introduction to the project
+
+--
+
+And at the end, you can put your abstract here!
+
+.center[
+```{r out.width="900px", echo=FALSE}
+include_graphics("libs/maria_abstract.png")
+```
+
+]
+
+---
+
+# usethis::use_rmd_readme
+
+RStudio has made initiating a README file easy
+
+--
+
+```{r eval=FALSE}
+install.packages("usethis")
+library(usethis)
+usethis::use_readme_rmd()
+```
+
+--
+
+Use the markdown mark-up language to format the new document
+
+---
+
+# It All Starts With The Data
+
+## Rules of Data
+
+### Rule #1 You never alter the raw data
+
+--
+
+### Rule #2 You never, ever alter the raw data
+
+.center[
+```{r echo=FALSE, out.width="600px"}
+knitr::include_graphics("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTj5FDF_huM2B6kPVktNN0ZX883LlRuhzg0hA4v1W0D0q166aaI")
+```
+
+]
+
+---
+
+# data
+
+
+This is a folder to store whatever raw files you have
+
+Reproducibility starts with data provenance
+
+--
+
+### Add a README
+
+Use a README file _within_ the data directory to list the facts about your data
+
+* Date of collection  
+
+* Who collected it  
+
+* Method of acquisition  
+
+* Codebook/ Fieldname Descriptions
+
+---
+
+# Munge - Now It's Time to Play
+
+_munge_ - mash until no good
+
+This is the folder to store scripts that take the _raw data_ and _clean it_
+
+--
+
+Then write out the _cleaned data_ into the `output` folder for future use
+
+--
+
+As painful as it is, all cleaning should be done programatically
+
+```{r eval=FALSE}
+clean_df_1 <- df_raw %>%
+  mutate(student_id = str_extract_all(id, pattern = "0\\d{7}"))
+```
+
+
+--
+
+e.g. Your munge code will _always_ work if new data overwrote your old data
+
+---
+
+# Outputs
+
+As mentioned, this is the home for any kind of outputed data
+
+* Cleaned data with a descriptive name
+
+* Useful to version using a date (YYYY-MM-DD)
+
+```{r eval=FALSE}
+write_csv(cleaned_data, paste0("output/", Sys.Date(), "_data_cleaned.csv"))
+```
+
+
+---
+
+# src let's start writing
+
+`src` is the folder to write all of your scripts
+
+--
+
+### Start Your Analysis By Running Previous Steps
+
+Typically these scripts will start by running any cleaning scripts with something like
+
+```{r eval=FALSE}
+
+lapply(list.files(path = "munge",full.names = T, pattern = ".R"), source)
+
+```
+
+--
+
+This command will look for all `.R` files in the `munge` folder and run them
+
+*All about reproducibility*
+
+---
+
+# Analysis is fun!
+
+Save each analysis as a separate R script
+
+Save a script based on the topic it covers or the question your were exploring
+
+--
+
+.pull-left[
+### Good
+
+EDA.R
+
+descriptive_stats.R
+
+linear_regression.R
+
+]
+
+.pull-right[
+### BAD
+
+test.R
+
+final.R
+
+untitled.R
+
+]
+
+---
+
+# Parts of a Script
+
+Each script should have the same basic form
+
+--
+
+### Purpose
+The purpose describes what the script is attempting to accomplish/ or question being asked
+
+Comments use the `#` symbol for comments (not read by R)
+
+```{r eval=FALSE}
+#Purpose: The purpose of this script is to look at a linear relationship between mpg and disp
+
+fit_linear <- lm(mpg ~ disp, data = mtcars)
+```
+
+--
+
+### Libraries
+
+It is useful to outline what libraries are used _at the top_ of the script.
+
+```{r eval=FALSE}
+library(tidyverse)
+library(brms)
+```
+
+---
+
+# Parts of a Script
+
+Each script should have the same basic form
+
+### Section Labels
+
+If you can organise your code into logical sections, then add a section break by pressing 
+.center[
+`CTRL/CMD + SHIFT + R`
+]
+`# Calculating Summaries -------------------------------------------------`
+
+---
+# Parts of a Script
+
+### Inline Comments
+
+```{r eval=FALSE}
+#Generate histogram
+
+ggplot(mtcars, aes(x = wt))+
+  geom_histogram()
+
+```
+
+Imagine you are writing for your _future self_
+
+Annotate code based on what you are _trying_ to do
+
+---
+# General Naming Conventions
+
+Datasets should be named as nouns
+
+--
+
+Descriptive names are better than non-descriptive names
+
+---
+
+# Object Naming Examples
+
+.pull-left[
+
+## Good
+
+- student_records  
+
+- iris_data
+
+- clean_data_final
+
+]
+
+.pull-right[
+
+## Bad  
+
+- data  
+
+- my_data
+
+- a
+
+]
+
+---
+# Naming Functions
+
+There will come a time when you will need to write your own function
+
+It is advisable to name functions descriptively with **verbs**
+
+```{r}
+make_sum <- function( x, y) {
+  out <- x + y
+  
+  return(out)
+}
+```
+
+If they start with the same keyword, that can help, too!
+
+---
+
+# Whitespace
+
+Whitespace is your friend
+
+When writing, put spaces after `"("` , `","` to make the code legible
+
+Indent with **two spaces**  when writing a long piece of code or in a block
+
+---
+
+# Whitespace and Punctuation (examples)
+
+.pull-left[
+
+## Good
+```{r eval=FALSE}
+if(this ==TRUE) {
+  median(a, n)
+} else{
+  mean(a, b, trim = 0.2)
+}
+```
+
+]
+
+.pull-right[
+
+## Bad
+```{r eval=FALSE}
+if(this ==TRUE) {median(a,n)} else{
+  mean(a,b,trim=0.2)
+}
+```
+
+]
+
+Note that RStudio will correct to this convention if you highlight your code and press 
+
+.center[
+`CTRL/CMD + SHIFT + A`
+]
+
+---
+
+# Naming Things
+
+R is **case sensitive**
+
+```{r error=TRUE}
+a <- 1
+A
+```
+
+
+--
+
+The only rule for names is that an object cannot start with a number
+
+--
+
+Several conventions exist for naming objects
+
+- snake_case (my prefered)
+
+- camelCase
+
+- dot.case
+
+--
+
+Whatever convention you use, stick with it!
+
+---
+
+# Outputing
+
+Generally, you will use your `src` scripts to generate
+
+- figures  
+
+- summary tables
+
+--
+
+Write these out to the `output`
+
+--
+
+Treat the output folder as something that _should_ be over-written
+
+---
+
+# Reports
+
+Write and maintain your final report in this folder
+
+This should include your `.Rmd` file
+
+Using the project structure you can reference your `figs` and `outputs`
+
+---
+
+# Tests
+
+For more advanced users, it can be beneficial to include a `tests` folder
+
+Here unit tests both on your code and your data can be performed
+
+```{r message=FALSE, warning=FALSE}
+library(validate)
+validate::check_that(mtcars, mpg >0, disp >0, vs <= 1, wt >0)
+```
+
+---
+
+# Visualising Test Ouputs
+.center[
+```{r out.width="800px", }
+barplot(validate::check_that(mtcars, mpg >0, disp >0, vs < .5, wt >0))
+```
+]
+
+---
+
+# Testing your modeling assumptions
+
+You can use the `testthat` and `validate` functions to test your data and code
+
+```{r include=FALSE}
+library(testthat)
+```
+
+
+```{r}
+# Function to check the normality of data using Shapiro-Wilk Test
+check_normality <- function(df, alpha = 0.05) {
+  p.value <- broom::tidy(shapiro.test(df))$p.value
+  if (p.value <= alpha) {
+    warning("Imported data is not normal, check QQ Plot")
+  }
+  else{
+    cat("Data passed")
+  }
+}
+```
+
+```{r error=TRUE,}
+non_normal_data <- rpois(10, 1) # Non-normal data should FAIL
+normal_data <- rnorm(100, 54, 1.5) #Normal Data Should PASS
+
+test_that("Function return correct conclusion", {
+  expect_that(check_normality(non_normal_data), prints_text("Data passed"))
+  expect_output(check_normality(normal_data))
+})
+```
+
+---
+
+# `req` and your own functions
+
+Eventually you will need to write custom functions
+
+Put these in the `req` folder and you can source them at the beginning of your analysis
+
+Additionally, you can use this folder to list all of the libraries you need
+
+---
+
+# What it looks like
+
+```{r eval=FALSE}
+# Purpose: Install all required libraries for this project
+
+if(!require("tidyverse", character.only = T)) {
+  install.packages("tidyverse")
+  library(tidyverse)
+} else{
+  library(tidyverse)
+}
+
+if(!require("AER", character.only = T)) {
+  install.packages("AER")
+  library(AER)
+} else{
+  library(AER)
+}
+
+```
+
+
+---
+
+# Our Project Layout
+
+```{r echo=FALSE}
+acme <- Node$new("data analysis project")
+  data <- acme$AddChild("data")
+  raw_data <- data$AddChild("raw_data.csv")
+  readme_data <- data$AddChild("README.md/ README.Rmd")
+  munge <- acme$AddChild("munge")
+  munge_script_1 <- munge$AddChild("import_clean.R")
+  output <- acme$AddChild("output")
+  clean_dat <- output$AddChild("cleaned_data.csv")
+  src <- acme$AddChild("src")
+  analysis_1 <- src$AddChild("00_descriptive_stats.R")
+  analysis_2 <- src$AddChild("01_factor_analysis.R")
+  analysis_3 <- src$AddChild("02_regression_models.R")
+  figs <- acme$AddChild("figs")
+  fig_1 <- figs$AddChild("histograms.pdf")
+  fig_2 <- figs$AddChild("boxplots.pdf")
+  reports <- acme$AddChild("reports")
+  my_report <- reports$AddChild("analysis_of_a.Rmd")
+  req <- acme$AddChild("req")
+  tests <- acme$AddChild("test")
+  my_test <- tests$AddChild("data_unit_checks.R")
+  readme_base <- acme$AddChild("README.md/ README.Rmd")
+  
+print(acme)
+```
+
+---
+
+class: top, center
+
+# Now we need to make a change
+```{r echo=FALSE, out.width="400px"}
+include_graphics("http://michaeldewittjr.com/ds4ir/figures/phd101212s.gif")
+```
+
+
+
+---
+
+# Git
+
+.pull-left[
+Git was created by Linus Torvalds (creator of Linux) to help manage the code base of Linux
+]
+.pull-right[
+```{r echo = FALSE, out.width="100px"}
+knitr::include_graphics("libs/git_icon.png")
+```
+]
+
+
+--
+
+Git is a version control system to track changes in code
+
+--
+
+Provides a history of changes and ability to make deliberate changes to the main code
+
+.center[
+```{r echo = FALSE, out.width="400px"}
+knitr::include_graphics("libs/excel.png")
+```
+]
+
+---
+
+# Git Philosophy
+
+In Git you work on a `branch` of a git repository or _repo_ (think version number)
+
+--
+
+Within your branch you can make changes and the `stage` and `commit` them (make edits) with comments
+
+--
+
+You can then `push` these changes (stores in memory)
+
+--
+
+If you like the changes you can merge them with the `master` branch
+
+--
+
+You and your collaborators can then `pull` the new master branch
+
+--
+
+If two people try to make changes on the same bit of code you will get a `merge` conflict.
+
+---
+
+# Diff
+
+Version Control = Traceability of Changes
+
+Visibility of differences
+
+--
+
+.center[
+```{r echo=FALSE, out.width="400px"}
+include_graphics("libs/version_control.png")
+```
+]
+
+---
+
+# Git in Pictures
+.center[
+```{r echo=FALSE, out.width="600px"}
+include_graphics("libs/gitflow.png")
+```
+]
+???
+
+Image Credit : [Oliver Steel](https://blog.osteele.com/2008/05/my-git-workflow/)
+
+---
+
+# And then there was GitHub
+
+.pull-left[
+GitHub emerged as an online platform to manage git repositories
+]
+.pull-right[
+```{r echo=FALSE, out.width="200px"}
+include_graphics("libs/Octocat.png")
+```
+
+]
+
+--
+
+Hosts your git repository online
+
+--
+
+Github also provides some handy user interfaces with:
+
+- Issue tracking  
+- Repo management (merges, etc)
+- Sharing repositories
+- web hosting  
+
+---
+
+# Some Git Commands
+
+### starting a repository
+```{r eval=FALSE}
+git init
+```
+
+### check changes
+
+```{r eval=FALSE}
+git status
+```
+
+### stage files
+
+```{r eval=FALSE}
+git add <file_name>
+```
+
+---
+
+# More commands
+
+### add a commit message
+
+```{r eval=FALSE}
+git commit -m "initial commit"
+```
+
+### push it to the branch
+
+```{r eval=FALSE}
+git push origin master
+```
+
+### pull the master branch
+
+```{r eval=FALSE}
+git pull master origin
+```
+
+### undo to previous commit
+
+```{r eval=FALSE}
+git revert HEAD
+```
+
+---
+
+# Or just use the R gui
+.center[
+```{r echo=FALSE, out.width="1000px"}
+include_graphics("libs/rstudo_git_tab.png")
+```
+]
+
+---
+
+# The structure is the same as the CL
+
+.center[
+```{r echo=FALSE, out.width="900px"}
+include_graphics("libs/rstudio_git_interface.png")
+```
+]
+
+---
+# Recap
+
+### Adopt a File System
+- Use a standard folder system
+- Never alter the raw data
+
+### Think Programatically
+- Comments and Section Breaks
+- README Files
+- Design for reproducibility
+
+### Version Control
+- Use it
+
+## It's all for future you!
+
+---
+class: inverse, center, middle
+# Now lets play!
+.center[
+<https://github.com/medewitt/r_class_demo>
+]
+
+---
+
+# Initial Git Configuration
+
+If you haven't done this already we can link your local git to your github
+
+```
+git config --global user.name 'Michael DeWitt'
+git config --global user.email 'dewittme@wfu.edu'
+```
+
+Now we can verify that everything is configured
+
+```
+git config --global --list
+```
+
+More instructions are located [here](http://happygitwithr.com/)
