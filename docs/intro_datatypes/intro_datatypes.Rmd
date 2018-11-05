@@ -1,0 +1,203 @@
+---
+title: "Introduction to R Data Types"
+subtitle: "The Nuts and Bolts"
+author: "Michael E DeWitt Jr"
+date: "2018-09-06 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: ["mtheme_max.css", "fonts_mtheme_max.css"]  
+    self_contained: false
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightLanguage: R
+      countIncrementalSlides: false 
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+library(kableExtra)
+library(knitr)
+```
+
+# The boring bits
+
+While the class is meant to be applied, there are some bits about the R language that are important to know when starting your programing journey.
+
+![boring](https://memesbams.com/wp-content/uploads/2017/10/bored-face-pictures-3.jpg)
+
+---
+class: center, middle
+
+# Data Types
+
+Within R there are a limited number of data types
+
+```{r echo=FALSE}
+data_types <- tribble(
+  ~`Data Type`, ~`Storage`, ~`Flexibility`,
+  "Integer", "Integer Values Only", "Low",
+  "Logical", "Logical Values (TRUE or FALSE)", "Low",
+  "Factors", "Factor Numbers", "Low",
+  "Numeric", "Any real number", "Medium",
+  "Character", "All treated as character", "High"
+)
+
+data_types %>% 
+  knitr::kable(format = "html") %>% 
+  kable_styling(bootstrap_options = "striped", font_size = 30)
+
+```
+
+---
+# Data Types
+
+You can inspect the data types using the `class` function:
+
+--
+
+Integer
+```{r}
+class(1L)
+```
+--
+
+Numeric
+```{r}
+class(1)
+```
+
+---
+# Data Types
+
+You can inspect the data types using the `class` function:
+
+--
+
+Logical
+```{r}
+class(TRUE)
+```
+--
+
+Character
+```{r}
+class("Are we having fun yet?")
+```
+
+
+---
+
+# How Data Are Stored via Object Types
+
+Within R you deal with:
+
+```{r echo=FALSE}
+r_objects <- tribble(
+  ~Object, ~Dimensionality, ~`Can Store`,
+  "Atomic Vector", "1", "Only one type",
+  "Matrix", "2", "Only one type
+  same length",
+  "Array", "n", "Only one type, same length",
+  "Data frame", "2", "One type per column, can be diff. classes, same length",
+  "List", "1", "Heterogeneous types, can be diff. lengths"
+)
+r_objects %>% 
+  knitr::kable(format = "html") %>% 
+  kable_styling(bootstrap_options = "striped", font_size = 30)
+
+
+```
+
+
+---
+# Vectors -> The most simple case
+
+Atomic vectors store only one "type" of data
+
+--
+
+Atomic vectors can be created using the `c` concatenate function and the assignment operator `<-`
+
+```{r}
+my_vector <- c(1, 2, 3, 79, 22)
+```
+
+--
+
+Vectors can only be one type
+
+```{r}
+class(my_vector)
+```
+
+---
+
+# Matrices -> 2 Dimensions of the Same
+
+Matrices can store two dimensions, but the *type* and *length* must be the same
+--
+```{r}
+(my_matrix <- matrix(c(1,2,3,4), nrow = 2, ncol = 2, byrow = TRUE))
+```
+--
+```{r}
+(my_matrix <- matrix(c("A","B","C","D"), nrow = 2, ncol = 2, byrow = TRUE))
+```
+--
+```{r}
+(my_matrix <- matrix(c("A",1,"C","D"), nrow = 2, ncol = 2, byrow = TRUE))
+```
+
+---
+
+# Arrays (n dimensions and beyond)
+
+These are useful in simulations, but don't come up often
+
+```{r}
+(my_3d_array <- array( 1:9, dim = c(3,3,3)))
+```
+
+---
+
+# Data Frames -> The workhorse of R
+
+The power of a data frame is that each column can take on a different class but must be the same length
+
+```{r}
+(my_df <- data_frame(strings = c("A", "B", "C"), numbers = 1:3, 
+                     logicals = c(TRUE, FALSE, TRUE)))
+```
+
+--
+
+We can then examine the structure of each column with the `str` function
+
+```{r}
+str(my_df)
+```
+
+---
+
+# The list -> The utility hitter
+
+The list is the most versitile of all objects and can store anything (one-dimensionally)
+
+```{r}
+my_list <- list(my_df = my_df, my_vector = my_vector, my_3d_array = my_3d_array, my_matrix = my_matrix)
+```
+
+--
+
+Let's see what's inside...
+
+```{r}
+str(my_list)
+```
+
+---
+class: inverse, center, middle
+
+# Now let's start programming

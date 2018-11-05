@@ -69,3 +69,8 @@ blockquote {
    display: block;
    margin: 100px 0;
 }
+
+hr.gold {
+  border-top: dotted 1px;
+  background-color: #522d80;
+}

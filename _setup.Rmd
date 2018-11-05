@@ -13,5 +13,4 @@ source("utils.R")
 make_website_footer()
 repo_url <- yaml::read_yaml("_site.yml")[["base_url"]]
 
-writeLines(c("test"), "test.html")
 ```

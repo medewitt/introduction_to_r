@@ -14,7 +14,7 @@ make_doc_links <-function(document_name, video_link = TRUE){
 [<i class="fa fa-play-circle"></i>](https://vimeopro.com/user39539526/data-analysis-in-r)
 </div>
 <br>
-<hr style="border-top: dotted 1px: background-color: #522d80;" />')
+<hr style="border-top: dotted 2px #9E7E38;" />')
   } else{
     glue(
       '<div class="column-right">
@@ -23,7 +23,7 @@ make_doc_links <-function(document_name, video_link = TRUE){
 [<i class="fab fa-r-project"></i>]({repo_url}/blob/master/{document_name}/{document_name}.Rmd)
 </div>
 <br>
-<hr style="border-top: dotted 1px: background-color: #522d80;" />')
+<hr style="border-top: dotted 2px #9E7E38;" />')
   }
   
 }
@@ -87,3 +87,18 @@ make_website_footer <-function(yml = "_site.yml"){
       </center>
   '), "footer.html")
 }
+
+
+expanding_section <-function(link_title="Expand", text){
+  glue::glue('<p>
+        <a class="btn btn-sm" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" background-color="#4CAF50">
+             {link_title}
+      </a>
+        </p>
+        <div class="collapse" id="collapseExample">
+        <div class="card card-block">
+             {text}
+      </div>
+        </div>'
+)}
+writeLines(expanding_section(text = "Hello world!"),"text.html")
