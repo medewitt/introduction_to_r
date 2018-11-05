@@ -47,9 +47,10 @@ thumbnail <- function(title, img, href, caption = TRUE) {
 jumbotron <- function(text){
   div(class = "jumbotron", p(text))
 }
-jumbotron("TestxxxBlehhhh")
 
-# Make Footer from yml ----
+#jumbotron("TestxxxBlehhhh")
+
+# Make Footer from yml ----------------------------------
 make_website_footer <-function(yml = "_site.yml"){
   yml <- read_yaml(yml)
   site_name <- yml[["name"]]
@@ -88,6 +89,7 @@ make_website_footer <-function(yml = "_site.yml"){
   '), "footer.html")
 }
 
+# Exanding Section ---------------------------------------
 
 expanding_section <-function(link_title="Expand", text){
   glue::glue('<p>
@@ -101,4 +103,30 @@ expanding_section <-function(link_title="Expand", text){
       </div>
         </div>'
 )}
-writeLines(expanding_section(text = "Hello world!"),"text.html")
+
+
+# make GA automatically ---------------------------------------------------
+
+
+
+make_google_analytics <-function(yaml = "_site.yml"){
+  yml<-read_yaml("_site.yml")
+  if(is.null(yml[["GA"]])){
+    writeLines(" ", "GA.html")
+  } else{
+    GA <- yml[["GA"]]
+    a <- glue::glue('<!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={GA}"></script>')
+    
+    b <- sprintf("<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      gtag('config', '%s');
+      </script>", GA)
+  }
+  writeLines(c(a,b), "GA.html")
+}
+
+make_google_analytics(yaml = "_site.yml")
