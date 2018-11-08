@@ -7,3 +7,7 @@ biblio-style: apalike
 ```{r, child="_setup.Rmd"}
 ```
 
+## Introduction
+
+Most of the workshop focused on building a hypothetical project. The project that we used is located []() at this link and is updated with all of the exercises that we did in class. Additionally, below are links to the exercises that were completed during the workshops and their associated answers.
+

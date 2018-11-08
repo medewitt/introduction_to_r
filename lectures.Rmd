@@ -7,7 +7,10 @@ biblio-style: apalike
 ```{r, child="_setup.Rmd"}
 ```
 
+
 ## Introduction to R
+
+In this section you can find all of the associated lecture materials which includes pdfs (<i class="fa fa-file icon-4x"></i>), R Markdown files which were used to build the slides (<i class="fab fa-r-project"></i>), and the links to the recorded workshops (<i class="fa fa-play-circle"></i>). 
 
 ### tldr:
 >An overview of R, RStudio and github. The focus is on orienting users to R via R Studio and getting comfortable within the IDE.

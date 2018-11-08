@@ -107,8 +107,6 @@ expanding_section <-function(link_title="Expand", text){
 
 # make GA automatically ---------------------------------------------------
 
-
-
 make_google_analytics <-function(yaml = "_site.yml"){
   yml<-read_yaml("_site.yml")
   if(is.null(yml[["GA"]])){
