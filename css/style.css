@@ -74,3 +74,11 @@ hr.gold {
   border-top: dotted 1px;
   background-color: #522d80;
 }
+
+.print-only {display: none;}
+
+@media print{
+	aside{display: none;}
+	main{ width: initial; margin: 0;}
+	.print-only {display: initial;}
+}
