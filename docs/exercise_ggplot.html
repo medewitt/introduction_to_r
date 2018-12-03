@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>ggplot2</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117944166-1"></script>
+<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      gtag('config', 'UA-117944166-1');
+      </script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="css\style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Data Analysis in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="lectures.html">
+    <span class="fa fa-book"></span>
+     
+    Lectures
+  </a>
+</li>
+<li>
+  <a href="exercises.html">
+    <span class="fa fa-paper-plane"></span>
+     
+    Exercises
+  </a>
+</li>
+<li>
+  <a href="resources.html">
+    <span class="fa fa-hand-paper"></span>
+     
+    Resources
+  </a>
+</li>
+<li>
+  <a href="https://michaeldewittjr.com">
+    <span class="fa fa-folder"></span>
+     
+    Home
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">ggplot2</h1>
+
+</div>
+
+
+<div id="introduction-to-ggplot2" class="section level1">
+<h1>Introduction to <code>ggplot2</code></h1>
+<p>This is a follow-along guide for the slides in the presentation.</p>
+</div>
+<div id="ggplot2" class="section level1">
+<h1>ggplot2</h1>
+<p><code>ggplot2</code> is an implementation of the <a href="https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448">Grammar of Graphics</a>. It is not a guide on what makes a <em>good</em> graphic, but rather a philosophy of building statistical graphics. The grammar proposes components that are common to all statistical graphics:</p>
+<ul>
+<li><p><strong>data</strong> - what data are you trying to plot</p></li>
+<li><p><strong>mappings</strong> - what aesthic mapping are you trying to plot</p></li>
+<li><strong>layers</strong>
+<ul>
+<li>geometries - bars, lines, points, etc</li>
+<li>statistics - statistical summaries of the data (e.g. counts)</li>
+</ul></li>
+<li><p><strong>scales</strong> - map color, size, shape</p></li>
+<li><p><strong>coordinate systems</strong> - describe how the data are mapped</p></li>
+<li><p><strong>facets</strong> - breaking the data into subsets of small multiples</p></li>
+<li><p><strong>themes</strong> - the details of display like font size, color pallets, etc</p></li>
+</ul>
+</div>
+<div id="now-for-implementing-the-grammar-with-ggplot2" class="section level1">
+<h1>Now for implementing the grammar with <code>ggplot2</code></h1>
+<p>Let’s call the <code>tidyverse</code> which includes <code>ggplot2</code>.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages ---------------------------------- tidyverse 1.2.1 --</code></pre>
+<pre><code>## v ggplot2 3.1.0.9000     v purrr   0.2.5     
+## v tibble  1.4.2          v dplyr   0.7.7     
+## v tidyr   0.8.2          v stringr 1.3.1     
+## v readr   1.1.1          v forcats 0.3.0</code></pre>
+<pre><code>## -- Conflicts ------------------------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<p>We’ll start with using the <code>diamonds</code> dataset that is built into <code>ggplot2</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<pre class="r"><code>head(diamonds)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["carat"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["cut"],"name":[2],"type":["ord"],"align":["right"]},{"label":["color"],"name":[3],"type":["ord"],"align":["right"]},{"label":["clarity"],"name":[4],"type":["ord"],"align":["right"]},{"label":["depth"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["table"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["price"],"name":[7],"type":["int"],"align":["right"]},{"label":["x"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["z"],"name":[10],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.23","2":"Ideal","3":"E","4":"SI2","5":"61.5","6":"55","7":"326","8":"3.95","9":"3.98","10":"2.43"},{"1":"0.21","2":"Premium","3":"E","4":"SI1","5":"59.8","6":"61","7":"326","8":"3.89","9":"3.84","10":"2.31"},{"1":"0.23","2":"Good","3":"E","4":"VS1","5":"56.9","6":"65","7":"327","8":"4.05","9":"4.07","10":"2.31"},{"1":"0.29","2":"Premium","3":"I","4":"VS2","5":"62.4","6":"58","7":"334","8":"4.20","9":"4.23","10":"2.63"},{"1":"0.31","2":"Good","3":"J","4":"SI2","5":"63.3","6":"58","7":"335","8":"4.34","9":"4.35","10":"2.75"},{"1":"0.24","2":"Very Good","3":"J","4":"VVS2","5":"62.8","6":"57","7":"336","8":"3.94","9":"3.96","10":"2.48"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>This dataset contains information for a variety of diamonds which includes the 5 C’s and additional geometries.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+</div>
+<div id="our-first-example" class="section level1">
+<h1>Our First Example</h1>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>Start with the data:</p>
+<pre class="r"><code>ggplot(diamonds)</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="aesthetics" class="section level2">
+<h2>Aesthetics</h2>
+<p>Note that we can pipe (<code>%&gt;%</code>) into <code>ggplot2</code>. This can be handy when we need to do some data wrangling/ munging before we graph.</p>
+<pre class="r"><code>diamonds %&gt;% 
+  ggplot(aes(x = carat, y = price))</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><em>Aside</em></p>
+<p>Note that we can specify <code>aes</code> outside of the ggplot2 object with something like</p>
+<pre class="r"><code>ggplot(mtcars)+
+  aes(x = mpg, y = cyl)</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="layers" class="section level2">
+<h2>Layers</h2>
+<div id="geoms" class="section level3">
+<h3>Geoms</h3>
+<p>Layers are the <code>geoms</code> and <code>stats</code> to which we can map out aesthetics. There are tons of options of which we cannot cover in this overview. See <a href="https://ggplot2.tidyverse.org/reference/#section-layer-geoms">geoms</a> and <a href="https://ggplot2.tidyverse.org/reference/#section-layer-stats">stats</a> for more details.</p>
+<p>Let’s make an x-y scatterplot with <code>geom_point</code>. Note that to add a component to a <code>ggplot2</code> item we use the <code>+</code> operator. There is a long history about why this is the case but it is important to remember.</p>
+<pre class="r"><code>diamonds %&gt;% 
+  ggplot( aes(x = carat, y = price))+
+  geom_point()</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>And let’s change the transparency on the points given that we have a lot of overlap. This will help us see the density of our data.</p>
+<pre class="r"><code>diamonds %&gt;% 
+  ggplot( aes(x = carat, y = price))+
+  geom_point(alpha = 1/5)</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="stats" class="section level3">
+<h3>Stats</h3>
+<p>Now let’s add a linear regression line to the graph. For simplicity as well, let’s save it to an object called <code>p</code>. We can continue to add components to <code>p</code> without having to rewrite our code each time. This is a very handy feature that separates <code>ggplot2</code> from the base plotting tools.</p>
+<pre class="r"><code>p &lt;- diamonds %&gt;% 
+  ggplot( aes(x = carat, y = price))+
+  geom_point(alpha = 1/5)</code></pre>
+</div>
+</div>
+<div id="scales" class="section level2">
+<h2>Scales</h2>
+<p><code>scale</code> can help us to change the scales of our axes. Using these features we don’t have to change our data before plotting it. This is very nice when dealing with log scales or percents.</p>
+<p>Let’s make the x and y axes on the log scale.</p>
+<pre class="r"><code>(p2 &lt;- p+
+  scale_x_log10()+
+  scale_y_log10())</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="facets" class="section level2">
+<h2>Facets</h2>
+<p>Now we add facets to our data. Facets create the “small multiple”<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
+<pre class="r"><code>(p3 &lt;- p2+
+  facet_wrap(~cut))</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="theme-elements" class="section level2">
+<h2>Theme Elements</h2>
+<p>First we need to add titles to our graph. We can do this with the <code>labs</code> function within <code>ggplot2</code></p>
+<pre class="r"><code>(p4 &lt;- p3+
+  labs(
+    title = &quot;Diamond Price as a Function of Carat Size&quot;,
+    subtile = &quot;Considering Diamond Cut&quot;,
+    caption= &quot;Data: Diamonds Dataset&quot;
+  ))</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>There are several built in “themes” that can be used to control some of the other graph details (background colours, grids, line colours, etc). We can add the defaults using <code>theme_</code></p>
+<pre class="r"><code>p4+
+  theme_minimal()</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Additionally, others have made themes for us to use. For example <code>ggthemes</code> has many familiar templates. Additionally, <a href=""><code>papaja</code></a> even has an <code>theme_apa</code> to make APA compliant graphs.</p>
+<pre class="r"><code>library(papaja)
+p4+
+  theme_apa()</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Or we can manipulate the theme directly through <code>theme</code>.</p>
+<pre class="r"><code>p4+
+  theme(panel.grid = element_blank(),
+        plot.title = element_text(size = 20, color = &quot;blue&quot;))</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+<div id="and-we-can-keep-iterating" class="section level2">
+<h2>And We Can Keep Iterating!</h2>
+<p>Now we can add another aesthetic element, colouring by a feature of our dataset and everything works!</p>
+<pre class="r"><code>p4 +
+  aes(color = clarity)</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="saving" class="section level2">
+<h2>Saving</h2>
+<p><code>ggsave</code> can be used to save the <code>ggplot2</code> object.</p>
+<pre class="r"><code>p4 +
+  aes(color = clarity)+
+  ggsave(&quot;outputs/diamonds_plot.pdf&quot;)</code></pre>
+</div>
+</div>
+<div id="a-second-examples" class="section level1">
+<h1>A Second Examples</h1>
+<p>Let’s do some additional analysis with our General Social Survey Data Set.</p>
+<pre class="r"><code>library(haven)
+url &lt;- &quot;http://users.wfu.edu/dewittme/data/sample/GSS2016.sav&quot;
+
+# Read Raw Data
+raw_data &lt;-read_spss(url)</code></pre>
+<p>I want to subset the data</p>
+<pre class="r"><code>library(labelled)
+my_subset &lt;- raw_data %&gt;% 
+  select(MAR1, AGE, WORKHARD, YEAR) %&gt;%
+  mutate_at(vars(MAR1, WORKHARD), labelled::to_factor)</code></pre>
+<p>Let’s Visualise a few things in our data</p>
+<pre class="r"><code>(p1 &lt;- my_subset %&gt;% 
+  ggplot(aes(MAR1))+
+  geom_bar(fill = &quot;#9E7E38&quot;)+
+  labs(
+    title = &quot;Marital Status for Person 1&quot;,
+    caption = &quot;Data: General Social Survey&quot;,
+    x = NULL
+  )+
+  theme_minimal())</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>Now let’s look at data groups</p>
+<pre class="r"><code>(p2 &lt;- my_subset %&gt;% 
+  mutate(WORKHARD_num = as.numeric(WORKHARD)) %&gt;% 
+  ggplot(aes(MAR1, WORKHARD_num))+
+  stat_summary(fun.data = &quot;mean_cl_boot&quot;)+
+  labs(
+    title = &quot;Mean Response for Working Hard&quot;,
+    subtitle = &quot;With Boostrapped CIs&quot;,
+    caption = &quot;Data: GSS&quot;,
+    x = NULL,
+    y = &quot;Opinion of Hard Work (1-5)&quot;
+  )+
+  theme_minimal())</code></pre>
+<pre><code>## Warning: Removed 933 rows containing non-finite values (stat_summary).</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p>Now we can put these plots together using <code>cowplot</code></p>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     ggsave</code></pre>
+<pre class="r"><code>plot_grid(p1, p2, labels = c(&quot;A&quot;, &quot;B&quot;), nrow = 2)</code></pre>
+<pre><code>## Warning: Removed 933 rows containing non-finite values (stat_summary).</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>Or if you wanted to get more fancy</p>
+<pre class="r"><code>ggdraw() +
+  draw_plot(p1 + 
+              theme(legend.justification = &quot;bottom&quot;),
+            0, 0, 1, 1) +
+  draw_plot(p2  + theme(legend.justification = &quot;top&quot;),
+            0.4, 0.52, 0.6, 0.4)</code></pre>
+<pre><code>## Warning: Removed 933 rows containing non-finite values (stat_summary).</code></pre>
+<p><img src="exercise_ggplot_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>There is much more documentation on this package <a href="https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html">here</a></p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Find more about this dataset using help(“diamonds”).<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>See more <a href="https://www.portfoliooffinediamonds.com/Blog/March-2015/The-5-Cs-of-a-diamond">about the five cees</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>See this <a href="https://en.wikipedia.org/wiki/Small_multiple">link</a> for more details. We can use the <code>facet_</code> to add these facets.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+  <br>
+    <hr>
+    
+    <div class="column-left">
+    <p>
+    <b>Introduction to R</b><br>
+    <a href="mailto:dewittme.wfu.edu">dewittme.wfu.edu</a> <br>
+    </p>
+    </div>
+    
+    <div class="column-center">
+    <p>
+    Office of Institutional Research <br>
+    309 Reynolda Hall <br>
+    Winston- Salem, NC, 27106<br>
+    </p>
+    
+    </div>
+    
+    <div class="column-right">
+    Michael DeWitt <br>
+    <a href="https://github.com/medewitt"><i class="fa fa-github"></i></a>
+    </div>
+    
+    <br>
+    <br>
+    <center>
+    <p>Copyright &copy; 2018 Michael DeWitt. All rights reserved.</p>
+    </center>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

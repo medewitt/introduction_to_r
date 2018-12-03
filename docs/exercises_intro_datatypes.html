@@ -11,7 +11,7 @@
 
 
 
-<title>Welcome</title>
+<title>Data Structures in R</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -333,13 +333,141 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Welcome</h1>
+<h1 class="title toc-ignore">Data Structures in R</h1>
 
 </div>
 
 
-<p>The purpose of this website is to provide all of the supporting documentation relating to the <strong>Introduction to Data Analysis with R</strong> that was offered through the Wake Forest University Personnel Development Center.</p>
-<p>All presentations, video, and supporting resources will be hosted here. IF you have any questions about the materials, please e-mail <a href="mailto:dewittme@wfu.edu">me</a>.</p>
+<div id="data-structures" class="section level1">
+<h1>Data Structures</h1>
+<p>As with all programming languages R represents (think stores) different kinds of data in different objects. It is important at a high level to understand what these different data objects allow us to do.</p>
+<div id="tldr" class="section level2">
+<h2>TL;DR</h2>
+<p>Key takeaway, try to get things to <code>dataframes</code>. These are flexible objects and can store most anything we want.</p>
+</div>
+</div>
+<div id="vectors" class="section level1">
+<h1>Vectors</h1>
+<p>Vectors are one dimensional data objects than can store one <em>type</em> of data.</p>
+<div id="aside" class="section level2">
+<h2>Aside</h2>
+<p>In R we use the <code>&lt;-</code> as the assignment operator. Use this to store an object into memory. You can use <code>alt</code> + <code>-</code> on Windows and <code>Option</code> + <code>-</code> to automatically insert this operator. When an object is assigned it sits in memory. You will see it in the “Environment Pane” (upper right in the default layout of R Studio).</p>
+</div>
+<div id="numeric-vector" class="section level2">
+<h2>Numeric Vector</h2>
+<p>Let’s built a numeric vector. A shortcut in R is that if you want a sequence of evently spaced digits you can you the colon <code>:</code> to make them. e.g.</p>
+<pre class="r"><code>1:10</code></pre>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
+<p>Now we can make a vector. We can use the <code>c()</code> or concatenate function to joint this sequence into a vector.</p>
+<pre class="r"><code># MAke the vector
+numeric_vector &lt;- c(1:10)
+
+# Print the Vector
+numeric_vector</code></pre>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
+<p>We can also examine the <code>class</code> of the vector to see what kind of data exists in it:</p>
+<pre class="r"><code>class(numeric_vector)</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+</div>
+<div id="character-vectors" class="section level2">
+<h2>Character Vectors</h2>
+<p>Here we can subset the built in data set <em>letters</em> and select the first 10 letters and assign it to a vector. <em>For extra practice print <code>letters</code> in the console to confirm that all 26 english letters are available</em></p>
+<pre class="r"><code>character_vector &lt;- letters[1:10]
+
+character_vector</code></pre>
+<pre><code>##  [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot; &quot;e&quot; &quot;f&quot; &quot;g&quot; &quot;h&quot; &quot;i&quot; &quot;j&quot;</code></pre>
+</div>
+</div>
+<div id="matrices" class="section level1">
+<h1>Matrices</h1>
+<p>Matrices are two dimensional versions of vectors. All of the columns must be of the same type. MAtrices are useful for heavy computational tasks, but we often don’t use them in social science research (in my experience). Dealing with microarray absolutely.</p>
+<pre class="r"><code>numeric_matrix &lt;- matrix(data = 1:10, nrow = 5, ncol = 2, byrow = TRUE)
+numeric_matrix</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    1    2
+## [2,]    3    4
+## [3,]    5    6
+## [4,]    7    8
+## [5,]    9   10</code></pre>
+<p>The <code>byrow</code> argument allows you to specify if you want the matrix to fill in by row or by column.</p>
+</div>
+<div id="dataframe" class="section level1">
+<h1>Dataframe</h1>
+<p>Dataframes are the most versatile objects in R and allow you to combine vectors of difference types. The important feature is that they all must be the same length.</p>
+<pre class="r"><code>example_dataframe &lt;- data.frame(numeric_vector= numeric_vector, 
+                                character_vector = character_vector, 
+                                another_number = c(21:30),
+                                another_letter = LETTERS[1:10])
+
+example_dataframe</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["numeric_vector"],"name":[1],"type":["int"],"align":["right"]},{"label":["character_vector"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["another_number"],"name":[3],"type":["int"],"align":["right"]},{"label":["another_letter"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"a","3":"21","4":"A"},{"1":"2","2":"b","3":"22","4":"B"},{"1":"3","2":"c","3":"23","4":"C"},{"1":"4","2":"d","3":"24","4":"D"},{"1":"5","2":"e","3":"25","4":"E"},{"1":"6","2":"f","3":"26","4":"F"},{"1":"7","2":"g","3":"27","4":"G"},{"1":"8","2":"h","3":"28","4":"H"},{"1":"9","2":"i","3":"29","4":"I"},{"1":"10","2":"j","3":"30","4":"J"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="lists" class="section level1">
+<h1>Lists</h1>
+<p>Lists are one-dimensional objects (kind of like vectors) which can store <em>any</em> other objects, even other lists.</p>
+<pre class="r"><code>test_list &lt;- list(
+  example_dataframe = example_dataframe,
+  numeric_vector = numeric_vector,
+  character_vector = character_vector,
+  numeric_matrix = numeric_matrix,
+  inner_list = list(1:10, letters)
+)
+
+test_list</code></pre>
+<pre><code>## $example_dataframe
+##    numeric_vector character_vector another_number another_letter
+## 1               1                a             21              A
+## 2               2                b             22              B
+## 3               3                c             23              C
+## 4               4                d             24              D
+## 5               5                e             25              E
+## 6               6                f             26              F
+## 7               7                g             27              G
+## 8               8                h             28              H
+## 9               9                i             29              I
+## 10             10                j             30              J
+## 
+## $numeric_vector
+##  [1]  1  2  3  4  5  6  7  8  9 10
+## 
+## $character_vector
+##  [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot; &quot;e&quot; &quot;f&quot; &quot;g&quot; &quot;h&quot; &quot;i&quot; &quot;j&quot;
+## 
+## $numeric_matrix
+##      [,1] [,2]
+## [1,]    1    2
+## [2,]    3    4
+## [3,]    5    6
+## [4,]    7    8
+## [5,]    9   10
+## 
+## $inner_list
+## $inner_list[[1]]
+##  [1]  1  2  3  4  5  6  7  8  9 10
+## 
+## $inner_list[[2]]
+##  [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot; &quot;e&quot; &quot;f&quot; &quot;g&quot; &quot;h&quot; &quot;i&quot; &quot;j&quot; &quot;k&quot; &quot;l&quot; &quot;m&quot; &quot;n&quot; &quot;o&quot; &quot;p&quot; &quot;q&quot;
+## [18] &quot;r&quot; &quot;s&quot; &quot;t&quot; &quot;u&quot; &quot;v&quot; &quot;w&quot; &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
+<p>You can subset lists using the <code>[[]]</code> syntax by position:</p>
+<pre class="r"><code>test_list[[1]]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["numeric_vector"],"name":[1],"type":["int"],"align":["right"]},{"label":["character_vector"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["another_number"],"name":[3],"type":["int"],"align":["right"]},{"label":["another_letter"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"a","3":"21","4":"A"},{"1":"2","2":"b","3":"22","4":"B"},{"1":"3","2":"c","3":"23","4":"C"},{"1":"4","2":"d","3":"24","4":"D"},{"1":"5","2":"e","3":"25","4":"E"},{"1":"6","2":"f","3":"26","4":"F"},{"1":"7","2":"g","3":"27","4":"G"},{"1":"8","2":"h","3":"28","4":"H"},{"1":"9","2":"i","3":"29","4":"I"},{"1":"10","2":"j","3":"30","4":"J"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Or by the list name (if it exists):</p>
+<pre class="r"><code>test_list[[&quot;numeric_matrix&quot;]]</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    1    2
+## [2,]    3    4
+## [3,]    5    6
+## [4,]    7    8
+## [5,]    9   10</code></pre>
+</div>
 
   <br>
     <hr>

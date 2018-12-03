@@ -7,3 +7,30 @@ biblio-style: apalike
 ```{r, child="_setup.Rmd"}
 ```
 
+## Introduction
+
+[Getting started](exercises_introduction.html)
+
+## Good Programming Practices
+
+There were no exercises for good programming practices. 
+
+## Cleaning Data
+
+[Data Cleaning](exercises_cleaning.html)
+
+## Introduction to Data Types
+
+[Data Types](exercises_intro_datatypes.html)
+
+## Dealing with Dates and Times
+
+[Dates and Times](exercises_datetimes.html)
+
+## Factors
+
+[Factors](exercises_factors.html)
+
+## Plotting with ggplot2
+
+[Graphing with ggplot2](exercises_ggplot.html)
