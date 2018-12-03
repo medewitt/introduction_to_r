@@ -7,6 +7,9 @@ biblio-style: apalike
 ```{r, child="_setup.Rmd"}
 ```
 
+The git repository that was used during the workshop is located [here](https://github.com/medewitt/r_class_demo). Feel free to fork, clone, modify, and use as you see fit. This is where the blank exercises exist as well as the initial phase of a "good" project structure.
+
+
 ## Introduction
 
 [Getting started](exercises_introduction.html)
