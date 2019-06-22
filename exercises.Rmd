@@ -7,7 +7,36 @@ biblio-style: apalike
 ```{r, child="_setup.Rmd"}
 ```
 
+
 ## Introduction
 
-Most of the workshop focused on building a hypothetical project. The project that we used is located []() at this link and is updated with all of the exercises that we did in class. Additionally, below are links to the exercises that were completed during the workshops and their associated answers.
+Most of the workshop focused on building a hypothetical project. The project that we used is located [here](https://github.com/medewitt/r_class_demo) at this link and is updated with all of the exercises that we did in class. This is where the blank exercises exist as well as the initial phase of a "good" project structure. Additionally, below are links to the exercises that were completed during the workshops and their associated answers.
 
+
+## Introduction
+
+[Getting started](exercises_introduction.html)
+
+## Good Programming Practices
+
+There were no exercises for good programming practices. 
+
+## Cleaning Data
+
+[Data Cleaning](exercises_cleaning.html)
+
+## Introduction to Data Types
+
+[Data Types](exercises_intro_datatypes.html)
+
+## Dealing with Dates and Times
+
+[Dates and Times](exercises_datetimes.html)
+
+## Factors
+
+[Factors](exercises_factors.html)
+
+## Plotting with ggplot2
+
+[Graphing with ggplot2](exercises_ggplot.html)

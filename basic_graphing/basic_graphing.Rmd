@@ -1,0 +1,497 @@
+---
+title: "Data Analysis in R"
+subtitle: "Visualisation with ggplot2"
+author: "Michael E DeWitt Jr"
+date: "2018-11-15 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    df_print: tibble
+    nature:
+      ratio: '16:9'
+      highlightLines: true
+      highlightLanguage: R
+css: ["mtheme_max.css", "fonts_mtheme_max.css"]  
+self_contained: false
+lib_dir: libs
+countIncrementalSlides: false 
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(rows.print=5)
+library(knitr)
+library(tidyverse)
+```
+
+class: inverse, middle, center
+
+# We've finally made it to graphing!
+
+---
+
+# Statistical Graphics
+
+--
+
+Understanding your data
+
+--
+
+Anomaly detection
+
+--
+
+**Communicating results!**
+
+---
+
+# Graphing in R
+
+Base R has internal plotting/ graphing functionality
+
+```{r fig.show='hold',fig.align='center', out.width= 400}
+par(mfrow=c(1,2))
+hist(mtcars$mpg, breaks = 30, main = "Histogram")
+boxplot(mtcars$mpg, mtcars$gear)
+```
+
+---
+
+# Base R Graphing
+
+Base R graphics are _pretty_ good
+
+--
+
+Called pen and ink (e.g. each layer is drawn on top of the other)
+
+--
+
+Have to redraw entire graphic if you need to "go back"
+
+---
+
+# Enter `ggplot2`
+
+.pull-left[
+The `ggplot2` package is based on the _Grammar of Graphics_ by Leland Wilkinson
+
+Grammar of Graphics proposes a philosophical underpinning for all statistical graphics
+
+`ggplot2` is an implementation of the the grammar of graphics
+
+[Cheatsheet here](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
+
+]
+
+.pull-right[
+
+```{r echo=FALSE, out.height=500}
+knitr::include_graphics("libs/grammar_of_graphics.png")
+```
+
+
+]
+
+---
+
+# So what does it mean?
+
+> In brief, the grammar tells us that a statistical graphic is a mapping from data to aesthetic attributes (colour, shape, size) of geometric objects (points, lines, bars). The plot may also contain statistical transformations of the data and is drawn on a specific coordinate system. Faceting can be used to generate the same plot for different subsets of the dataset. It is the combination of these independent components that make up a graphic.
+
+.pull-right[ Wickham _ggplot2_:Elegant Graphics for Data Analysis]
+
+---
+class: middle, center, inverse
+
+# The Grammar of Graphics isn't a Guide for Making <br> _Good_ Graphs
+
+---
+# Good Graphics References Are All Around
+
+#### Books
+[Edward Tufte's Books](https://www.amazon.com/Visual-Display-Quantitative-Information/dp/1930824130)
+
+[Story Telling With Data](https://www.amazon.com/Storytelling-Data-Visualization-Business-Professionals/dp/1119002257/ref=sr_1_1?s=books&ie=UTF8&qid=1542138734&sr=1-1&keywords=storytelling+with+data)
+
+[The Elements of Graphing Data](https://www.amazon.com/Elements-Graphing-Data-William-Cleveland/dp/0963488414)
+
+[Data Visualization: A Practical Introduction](http://socviz.co/) (All ggplot2)
+
+#### Blogs
+
+[Flowing Data](https://flowingdata.com/)
+
+[Our Wold in Data](https://ourworldindata.org/)
+
+[FiveThirtyEight](https://fivethirtyeight.com/)
+
+
+---
+
+# Components of the Grammar
+
+In the grammar of graphics there are the following components of a graphic
+
+* **data** - what data are you trying to plot
+
+* **mappings** - what aesthetic mapping are you trying to plot
+
+* **layers**
+  * geometries - bars, lines, points, etc
+  * statistics - statistical summaries of the data (e.g. counts)
+  
+* **scales** - map color, size, shape
+
+* **coordinate systems** - describe how the data are mapped
+
+* **facets** - breaking the data into subsets of small multiples
+
+* **themes** - the details of display like font size, color pallets, etc
+
+---
+
+# Components Map Directly to `ggplot` 
+
+Each component has a function or argument in `ggplot2`
+
+* **data** - `data`
+
+* **mappings** - `aes(x, y, color, size, group)`
+
+* **layers**
+  * geometries - `geom_` (e.g. `geom_bar`)
+  * statistics - `stat`
+  
+* **scales** - `scale_` (e.g.) `scale_colour_discrete`
+
+* **coordinate systems** - `coord_polar`
+
+* **facets** - `facet_`
+
+* **themes** - `theme_minimal`
+
+---
+
+# So Let's Start With a Graph
+
+The `diamonds` set is automatically loaded with `ggplot2`
+
+```{r}
+head(diamonds)
+```
+
+---
+# Building the Graph with `ggplot`
+
+```{r out.width=400, fig.align='center'}
+ggplot(data = diamonds)
+
+```
+
+Now we have initiated a graphical object
+
+---
+# Now Add Our Aesthetics with `aes`
+
+```{r out.width=400, fig.align='center'}
+ggplot(data = diamonds, aes(x = carat, y= price))
+```
+
+---
+# Now Add Our Layer
+
+`geom_point` will place a dot for each x-y pair
+
+```{r out.width=400, fig.align='center'}
+ggplot(data = diamonds, aes(x = carat, y= price))+
+  {{geom_point()}}
+```
+
+---
+# Can manipulate features of a given `geom`
+
+.pull-left[
+`alpha` allows us to set the transparency
+```{r out.width=400, fig.align='center', eval=FALSE}
+ggplot(data = diamonds, 
+       aes(x = carat, y= price))+
+  {{geom_point(alpha = .05)}}
+```
+
+This is where we could change the point color with `colour = "red"`
+
+We could change the marker type `shape = 5`
+
+]
+
+.pull-right[
+```{r out.width=500, fig.align='center', echo=FALSE}
+ggplot(data = diamonds, 
+       aes(x = carat, y= price))+
+  {{geom_point(alpha = .05)}}
+```
+]
+
+---
+# Now We Can Add a Statistic
+
+.pull-left[
+```{r out.width=400, fig.align='center'}
+p <- ggplot(data = diamonds, 
+             aes(x = carat, y= price))+
+  geom_point(alpha = 0.05)+
+  {{geom_smooth(method = "lm")}} # Our Statistic
+```
+
+In this case we are using a linear model, but other models can be used:
+
+- Generalised linear models (logistic regression, poisson regression)
+
+- LOESS
+
+- GAMs
+
+]
+
+.pull-right[
+```{r out.width=500, fig.align='center', echo=FALSE}
+p
+```
+]
+
+
+---
+# Modify the Scales with `scale_`
+
+.pull-left[
+```{r out.width=400, fig.align='center'}
+p <- p+
+  {{scale_y_log10()}}+ # Scale for the Y-axis
+  {{scale_x_log10()}} # Scale for X-axis
+
+```
+
+Through scale arguments we can change
+- Other transformations like square root transformation
+- Other "scales" like percents, discrete data, or dates
+- Break points (e.g. what labels appear)
+- Limits
+- Control colours and some other properties
+
+]
+
+.pull-right[
+```{r out.width=500, fig.align='center', echo=FALSE}
+p
+```
+
+]
+---
+
+# We Can Introduce Facets
+
+```{r out.width=400, fig.align='center'}
+(p<- p+
+  {{facet_wrap(~cut)}} # Facet by "cut"
+ )
+```
+
+---
+
+# Now we can add some descriptors
+
+.pull-left[
+```{r out.height=300, fig.align='center'}
+p <- p +
+  {{labs(
+    title = "There is Higher Variability in Price for Fair Diamonds",
+    subtitle = "Log-Log Plot of Carat vs Price",
+    caption = "Data: Diamonds Dataset",
+    y = "Log Price ($)",
+    x = "Log Carat"
+  )}}
+```
+
+As you add additional aesthetics you can change the description in the `labs` arguments (e.g. if you added a colour aesthetic you could rename it here)
+
+]
+
+.pull-right[
+```{r echo=FALSE, out.height=500, fig.align='center'}
+p
+```
+]
+---
+# We can change the theme and a few details
+
+.pull-left[
+There are many default themes, but checkout [ggthemes](https://github.com/jrnold/ggthemes)
+
+```{r out.width=400, fig.align='center'}
+p <- p+
+  {{theme_minimal()}}
+```
+]
+
+.pull-right[
+```{r out.width=500, fig.align='center', echo=FALSE}
+p 
+```
+]
+
+---
+
+# Or if it makes you more comfortable...
+.pull-left[
+```{r out.width=400, fig.align='center', eval=FALSE}
+library(ggthemes)
+p+
+  {{theme_stata()}}
+```
+
+]
+
+.pull-right[
+```{r out.width=500, fig.align='center', echo=FALSE}
+library(ggthemes)
+p+
+  {{theme_stata()}}
+```
+]
+
+---
+# Or Customise Even Further
+
+.pull-left[
+You can change _every_ element of the graph
+
+```{r out.width=400, fig.align='center'}
+p <- p+
+  theme(panel.grid = 
+          element_blank(),
+        plot.title = 
+          element_text(size = 20),
+        strip.background = 
+          element_rect(fill = "#F0F0F0"))
+```
+
+Check them all out [here](https://ggplot2.tidyverse.org/reference/theme.html)
+
+]
+
+.pull-right[
+```{r echo=FALSE, out.width=500, fig.align='center'}
+p
+```
+
+]
+
+---
+# Add Another Aesthetic
+
+.pull-left[
+```{r out.width=400, fig.align='center'}
+p<- p +
+  {{aes(color = clarity)}}+
+  labs(color = "Clarity")
+```
+]
+
+.pull-right[
+```{r out.width=500, fig.align='center', echo=FALSE}
+p
+```
+
+]
+
+
+---
+
+# And they layer and can be saved
+
+You can layer additional components until you complete your message.
+
+But...now you may want to save your image.
+
+`ggave` has this functionality
+
+Can save to pdf or png and specify the dimensions
+
+```{r eval=FALSE}
+p %>% 
+  ggsave(filename = "outputs/my_cool_plot.pdf")
+```
+
+---
+
+# Making More Complex Graphics
+
+`ggplot2` has been extended in many [ways](http://www.ggplot2-exts.org/gallery/)
+
+- Stitch plots together with `cowplot`
+
+- Add GIS capabilities with `sf`
+
+- Network analysis with `ggraph`
+
+- interactive graphics with `plotly`
+
+---
+
+# Interactivity with `plotly2`
+
+.pull-left[
+
+The `plotly` library allows you to make interactive graphs with `ggplot2` objects.
+
+These are great features on websites.
+
+```{r eval=FALSE}
+p2 <- ggplot(mtcars, 
+             aes(disp, mpg, 
+                 color= as.factor(cyl)))+
+  geom_point()+
+  labs(
+    title = "My plotly object",
+    color = "Cylinders"
+  )+
+  theme_fivethirtyeight()
+
+library(plotly)
+ggplotly(p2)
+
+```
+
+]
+
+.pull-right[
+```{r echo=FALSE, out.width=500, fig.align='center', message=FALSE, warning=FALSE}
+p2 <- ggplot(mtcars, aes(disp, mpg, color= as.factor(cyl)))+
+  geom_point()+
+  labs(
+    title = "My plotly object",
+    color = "Cylinders"
+  )+
+  theme_fivethirtyeight()
+
+library(plotly)
+ggplotly(p2)
+```
+
+]
+
+---
+
+# Recap
+
+`ggplot2` is an implmentation of the _Grammar of Graphics_
+
+It allows us to make publication quality graphics by mapping data to aesthetics via geometries and statistics.
+
+
+
+
+
+
+
